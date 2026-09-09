@@ -361,4 +361,83 @@ footer {
   footer {
     margin: 0 25px;
   }
+}.ai-section {
+  border-top: 1px solid #d9dbd6;
+}
+
+.ai-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+}
+
+.ai-description {
+  color: #67706b;
+  line-height: 1.7;
+  font-size: 17px;
+  margin-bottom: 25px;
+}
+
+#aiPlannerForm {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#plannerInput {
+  width: 100%;
+  min-height: 220px;
+  resize: vertical;
+  padding: 20px;
+  border: 1px solid #ccd0cc;
+  border-radius: 12px;
+  background: white;
+  font: inherit;
+  line-height: 1.6;
+  outline: none;
+}
+
+#plannerInput:focus {
+  border-color: #658975;
+}
+
+#aiPlannerForm button {
+  align-self: flex-start;
+  border: none;
+  border-radius: 8px;
+  padding: 15px 22px;
+  background: #263b30;
+  color: white;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ai-result {
+  min-height: 330px;
+  background: #263b30;
+  color: white;
+  border-radius: 18px;
+  padding: 35px;
+}
+
+.result-label {
+  display: block;
+  color: #9eb2a6;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 25px;
+}
+
+#plannerResult {
+  white-space: pre-wrap;
+  line-height: 1.7;
+  color: #e2e8e4;
+}
+
+@media (max-width: 850px) {
+  .ai-grid {
+    grid-template-columns: 1fr;
+  }
 }

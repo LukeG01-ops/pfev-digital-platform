@@ -128,7 +128,45 @@ document.querySelector('#app').innerHTML = `
 
   </form>
 </section>
+<section id="planner-ai" class="section ai-section">
+  <div class="section-title">
+    <span>02</span>
 
+    <div>
+      <p>PFEV AI PLANNER</p>
+      <h2>Trasforma la tua settimana in un piano.</h2>
+    </div>
+  </div>
+
+  <div class="ai-grid">
+    <div>
+      <p class="ai-description">
+        Descrivi i tuoi turni, gli impegni e i momenti in cui
+        normalmente hai più o meno energia.
+      </p>
+
+      <form id="aiPlannerForm">
+        <textarea
+          id="plannerInput"
+          placeholder="Esempio: lunedì lavoro 6-14 e nel pomeriggio ho poca energia. Martedì lavoro 14-22..."
+          required
+        ></textarea>
+
+        <button type="submit">
+          Genera il mio piano PFEV
+        </button>
+      </form>
+    </div>
+
+    <div class="ai-result">
+      <span class="result-label">PIANO GENERATO</span>
+
+      <div id="plannerResult">
+        Il tuo piano comparirà qui.
+      </div>
+    </div>
+  </div>
+</section>
     <section id="tech" class="section tech-section">
       <div class="section-title">
         <span>02</span>
@@ -206,5 +244,49 @@ form.addEventListener('submit', async (event) => {
 
     message.textContent =
       'Si è verificato un errore. Riprova tra poco.'
+   }       
+});
+const aiPlannerForm = document.querySelector('#aiPlannerForm')
+const plannerInput = document.querySelector('#plannerInput')
+const plannerResult = document.querySelector('#plannerResult')
+
+aiPlannerForm.addEventListener('submit', async (event) => {
+  event.preventDefault()
+
+  const input = plannerInput.value.trim()
+
+  if (!input) return
+
+  plannerResult.textContent = 'Sto creando il tuo piano...'
+
+  try {
+    const response = await fetch(
+      import.meta.env.VITE_AI_WEBHOOK_URL,
+      {
+        method: 'POST',
+
+        headers: {
+          'Content-Type': 'application/json',
+        },
+
+        body: JSON.stringify({
+          input
+        }),
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    plannerResult.textContent = data.plan
+
+  } catch (error) {
+    console.error(error)
+
+    plannerResult.textContent =
+      'Non è stato possibile generare il piano. Riprova.'
   }
 })
