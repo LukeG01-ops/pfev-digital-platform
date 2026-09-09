@@ -1,5 +1,6 @@
 import './style.css'
-
+import { marked } from 'marked'
+import DOMPurify from 'dompurify'
 document.querySelector('#app').innerHTML = `
   <header class="navbar">
     <div class="logo">PFEV</div>
@@ -281,7 +282,12 @@ aiPlannerForm.addEventListener('submit', async (event) => {
 
     const data = await response.json()
 
-    plannerResult.textContent = data.plan
+    const renderedPlan = marked.parse(data.plan, {
+  breaks: true,
+  gfm: true
+})
+
+plannerResult.innerHTML = DOMPurify.sanitize(renderedPlan)
 
   } catch (error) {
     console.error(error)

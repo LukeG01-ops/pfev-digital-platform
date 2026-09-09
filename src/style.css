@@ -441,3 +441,72 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+#plannerResult {
+  line-height: 1.7;
+  color: #e2e8e4;
+}
+
+#plannerResult h1,
+#plannerResult h2,
+#plannerResult h3 {
+  font-family: 'Manrope', sans-serif;
+  color: white;
+  margin-top: 28px;
+  margin-bottom: 14px;
+  letter-spacing: -0.5px;
+}
+
+#plannerResult h1 {
+  font-size: 28px;
+}
+
+#plannerResult h2 {
+  font-size: 23px;
+}
+
+#plannerResult h3 {
+  font-size: 19px;
+}
+
+#plannerResult p {
+  margin-bottom: 16px;
+}
+
+#plannerResult strong {
+  color: white;
+  font-weight: 700;
+}
+
+#plannerResult ul,
+#plannerResult ol {
+  padding-left: 22px;
+  margin: 14px 0 20px;
+}
+
+#plannerResult li {
+  margin-bottom: 8px;
+}
+
+#plannerResult table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 22px 0;
+  font-size: 14px;
+}
+
+#plannerResult th,
+#plannerResult td {
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.15);
+  text-align: left;
+  vertical-align: top;
+}
+
+#plannerResult th {
+  background: rgba(255,255,255,0.08);
+  color: white;
+}
+
+#plannerResult tr:nth-child(even) {
+  background: rgba(255,255,255,0.03);
+}

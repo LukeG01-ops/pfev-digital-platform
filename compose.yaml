@@ -1,0 +1,14 @@
+services:
+  web:
+    build:
+      context: .
+      args:
+        VITE_AI_WEBHOOK_URL: ${VITE_AI_WEBHOOK_URL}
+
+    container_name: pfev-platform
+
+    ports:
+      - "8080:80"
+
+    restart: unless-stopped
+    
