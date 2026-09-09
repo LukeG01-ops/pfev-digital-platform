@@ -300,7 +300,38 @@ footer {
   color: #737b76;
   font-size: 13px;
 }
+.resource-form {
+  width: 100%;
+  max-width: 390px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
+.resource-form input {
+  width: 100%;
+  padding: 16px 18px;
+  border: 1px solid #c9cdc9;
+  border-radius: 8px;
+  background: #f7f7f3;
+  font: inherit;
+  outline: none;
+}
+
+.resource-form input:focus {
+  border-color: #658975;
+}
+
+.resource-form button {
+  width: 100%;
+}
+
+#formMessage {
+  margin-top: 5px;
+  min-height: 20px;
+  font-size: 14px;
+  color: #52715e;
+}
 @media (max-width: 850px) {
   nav,
   .nav-button {

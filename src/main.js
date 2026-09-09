@@ -91,18 +91,43 @@ document.querySelector('#app').innerHTML = `
       </div>
     </section>
 
-    <section id="risorse" class="section resources-section">
-      <div>
-        <span class="badge">IN SVILUPPO</span>
-        <h2>Le risorse PFEV stanno arrivando.</h2>
-        <p>
-          La piattaforma verrà progressivamente arricchita con strumenti
-          digitali e contenuti dedicati ai lettori.
-        </p>
-      </div>
+   <section id="risorse" class="section resources-section">
+  <div>
+    <span class="badge">ACCESSO ANTICIPATO</span>
+    <h2>Ricevi le risorse PFEV.</h2>
 
-      <button id="notifyButton">Avvisami quando saranno disponibili</button>
-    </section>
+    <p>
+      Lascia i tuoi dati per essere avvisato quando il planner
+      e le nuove risorse digitali saranno disponibili.
+    </p>
+  </div>
+
+  <form id="resourceForm" class="resource-form">
+
+    <input
+      id="name"
+      name="name"
+      type="text"
+      placeholder="Il tuo nome"
+      required
+    >
+
+    <input
+      id="email"
+      name="email"
+      type="email"
+      placeholder="La tua email"
+      required
+    >
+
+    <button type="submit">
+      Avvisami
+    </button>
+
+    <p id="formMessage"></p>
+
+  </form>
+</section>
 
     <section id="tech" class="section tech-section">
       <div class="section-title">
@@ -139,6 +164,47 @@ document.querySelector('#app').innerHTML = `
   </footer>
 `
 
-document.querySelector('#notifyButton').addEventListener('click', () => {
-  alert('Presto collegheremo questo pulsante al nostro primo workflow n8n!')
+const form = document.querySelector('#resourceForm')
+const message = document.querySelector('#formMessage')
+
+form.addEventListener('submit', async (event) => {
+  event.preventDefault()
+
+  const name = document.querySelector('#name').value
+  const email = document.querySelector('#email').value
+
+  message.textContent = 'Invio in corso...'
+
+  try {
+    const response = await fetch(
+      'https://lukeg01.app.n8n.cloud/webhook/pfev-resource-request',
+      {
+        method: 'POST',
+
+        headers: {
+          'Content-Type': 'application/json',
+        },
+
+        body: JSON.stringify({
+          name,
+          email,
+          resource: 'planner-pfev',
+        }),
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`)
+    }
+
+    message.textContent = 'Richiesta inviata con successo ✓'
+
+    form.reset()
+
+  } catch (error) {
+    console.error(error)
+
+    message.textContent =
+      'Si è verificato un errore. Riprova tra poco.'
+  }
 })
