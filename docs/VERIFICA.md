@@ -43,7 +43,7 @@ Il resoconto seguente descrive anche la prima revisione. Il diagramma dell'energ
 
 - **Estetica reale non verificata:** il browser dell'ambiente ha rifiutato l'anteprima con `ERR_BLOCKED_BY_CLIENT`. Non sono stati prodotti screenshot né eseguiti controlli visuali desktop/mobile. Il controllo CSS non equivale a una prova nel browser.
 - Aprire a 320, 390, 768, 1280 e 1440 px; verificare menu, titoli, copertine, diagramma e moduli. Verificare zoom al 200%, tastiera e preferenza movimento ridotto.
-- Provare una generazione reale su Vercel e accertare la presenza delle quattro parti PFEV. La guida aggiunta al testo inoltrato non sostituisce un prompt di sistema nel workflow n8n; il suo risultato va verificato sul modello realmente configurato.
+- Provare una generazione reale su Vercel e accertare la coerenza con le quattro parti PFEV. Il frontend mantiene il contratto del workflow n8n esistente; prompt e comportamento vanno verificati sul modello realmente configurato.
 - Provare il form risorse con dati di test autorizzati e verificarne il salvataggio in Supabase. Non sono state create righe di test esterne in questa sessione.
 - Configurare un limite durevole alle richieste AI e un budget del provider. Il secret protegge il collegamento al webhook, non impedisce l'abuso dell'endpoint pubblico.
 - Completare con il titolare i dettagli privacy (tempi di conservazione, configurazioni e responsabilità dei servizi). Il testo del form è una spiegazione operativa, non una certificazione di conformità.

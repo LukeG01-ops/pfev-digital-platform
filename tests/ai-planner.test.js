@@ -74,13 +74,12 @@ test("AI API boundaries and upstream contract (mocked services, no external writ
   process.env.N8N_AI_WEBHOOK_URL = "https://workflow.example.test/webhook";
   process.env.N8N_AI_WEBHOOK_SECRET = "test-only-secret";
   await t.test(
-    "forwards context with PFEV guidance and returns only the plan",
+    "forwards the trimmed context and returns only the plan",
     async () => {
       globalThis.fetch = async (url, options) => {
         assert.equal(url, "https://workflow.example.test/webhook");
         assert.equal(options.headers["x-pfev-secret"], "test-only-secret");
-        assert.match(JSON.parse(options.body).input, /Priorità mobili/);
-        assert.ok(JSON.parse(options.body).input.includes(input));
+        assert.equal(JSON.parse(options.body).input, input);
         assert.ok(options.signal);
         return {
           ok: true,

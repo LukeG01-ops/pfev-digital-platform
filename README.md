@@ -158,6 +158,6 @@ La release editoriale interattiva è pubblicata dal ramo `main`, collegato al pr
 - Animazioni con pausa e rispetto della preferenza di movimento ridotto.
 - Tech project raccolto in una sezione richiudibile; i link diretti la aprono.
 - Le risorse sono in preparazione: il form registra interesse, non consegna ancora materiali.
-- La guida PFEV aggiunta alla richiesta AI favorisce quattro sezioni coerenti con il metodo. Il prompt e le esecuzioni del workflow n8n vanno verificati sul servizio reale.
+- Il planner mantiene il contratto del workflow n8n esistente e inoltra soltanto il contesto ripulito. Prompt e comportamento del modello restano responsabilità del workflow server-side.
 - Limiti anti-abuso, budget AI e dettagli privacy vanno verificati prima dell'uso pubblico esteso.
 - Il controllo visuale desktop/mobile resta da completare: l'anteprima era bloccata nell'ambiente di lavoro. Non considerare la sola compilazione una verifica estetica.
