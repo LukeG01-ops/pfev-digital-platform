@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-10T19:36:07.272Z",
+  "title": "Design System: Shift Flow",
+  "extensions": {
+    "shadows": [
+      {
+        "name": "book",
+        "value": "16px 24px 30px #203c322a",
+        "purpose": "Profondità del modello interattivo del libro"
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(.16,1,.3,1)",
+        "purpose": "Transizioni dei controlli e del diagramma"
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "compact",
+        "value": "1150px"
+      },
+      {
+        "name": "single-column",
+        "value": "850px"
+      },
+      {
+        "name": "mobile",
+        "value": "560px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "html": "<button class=\"ds-primary\">Crea il tuo piano</button>",
+      "css": ".ds-primary{background:var(--deep,#233d3b);color:#ffffff;border:0;padding:14px 23px;min-height:54px;font:600 16px Barlow,sans-serif;cursor:pointer}.ds-primary:hover{background:#365853}.ds-primary:focus-visible{outline:3px solid #a44f43;outline-offset:3px}"
+    },
+    {
+      "name": "Dark button",
+      "kind": "button",
+      "refersTo": "button-dark",
+      "html": "<button class=\"ds-dark\">Avvisami</button>",
+      "css": ".ds-dark{background:var(--deep,#233d3b);color:white;border:0;padding:14px 23px;min-height:54px;font:600 16px Barlow,sans-serif;cursor:pointer}.ds-dark:hover{background:#365853}.ds-dark:focus-visible{outline:3px solid #a44f43;outline-offset:3px}"
+    },
+    {
+      "name": "Text input",
+      "kind": "input",
+      "html": "<label class=\"ds-label\">Nome<input class=\"ds-input\" placeholder=\"Come ti chiami?\"></label>",
+      "css": ".ds-label{font:600 15px Barlow,sans-serif;color:var(--ink,#253533)}.ds-input{display:block;padding:14px 16px;border:1px solid #9fadc1;background:white;color:var(--ink,#253533);font:16px Barlow,sans-serif;margin-top:10px;border-radius:5px}.ds-input:focus-visible{outline:3px solid #a44f43;outline-offset:3px}"
+    },
+    {
+      "name": "Technology tag",
+      "kind": "chip",
+      "html": "<span class=\"ds-tag\">JavaScript</span>",
+      "css": ".ds-tag{display:inline-block;padding:5px 9px;background:var(--deep,#233d3b);border:1px solid #5b7091;border-radius:4px;color:#ffffff;font:13px Barlow,sans-serif}"
+    },
+    {
+      "name": "Text link",
+      "kind": "nav",
+      "html": "<a class=\"ds-link\" href=\"#metodo\">Il metodo</a>",
+      "css": ".ds-link{display:inline-block;background:#ffffff;color:#ffffff;padding:10px;font:15px Barlow,sans-serif;text-decoration:none}.ds-link:hover{color:var(--deep,#233d3b)}.ds-link:focus-visible{outline:3px solid #a44f43;outline-offset:3px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "La vita cambia ritmo",
+    "overview": "Sistema editoriale guidato dalle copertine; verifica visuale da completare.",
+    "keyCharacteristics": [
+      "Libri originali",
+      "Serif editoriale",
+      "Interazione 3D",
+      "Palette rosa, acqua, corallo e azzurro"
+    ],
+    "rules": [],
+    "dos": [
+      "Distinguere sito Shift Flow e metodo PFEV."
+    ],
+    "donts": [
+      "Non dichiarare verifica visuale completata senza prove."
+    ]
+  }
+}
