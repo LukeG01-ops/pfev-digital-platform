@@ -148,7 +148,7 @@ Il frontend è disponibile sulla porta 8080. Il container Nginx serve file stati
 5. Controlla `git diff` e salva soltanto i file del redesign. Esegui commit e push con il tuo flusso Git abituale; non caricare `.env`, `node_modules` o `dist` nel repository.
 6. Se il repository è collegato al progetto Vercel esistente, verifica l'esito della nuova pubblicazione e la presenza delle due variabili server-only nell'ambiente corretto. Non creare un nuovo progetto Vercel senza necessità.
 
-Non è stato fatto nessun push automatico durante questa revisione. Le dipendenze e il lockfile del progetto originale sono rimasti invariati.
+La release editoriale interattiva è pubblicata dal ramo `main`, collegato al progetto Vercel esistente. Le credenziali restano configurate esclusivamente nell'ambiente server-side.
 
 ## Contenuti e limiti
 
