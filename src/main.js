@@ -261,9 +261,9 @@ aiPlannerForm.addEventListener('submit', async (event) => {
   plannerResult.textContent = 'Sto creando il tuo piano...'
 
   try {
-    const response = await fetch(
-      import.meta.env.VITE_AI_WEBHOOK_URL,
-      {
+  const response = await fetch(
+  '/api/ai-planner',
+    {
         method: 'POST',
 
         headers: {
