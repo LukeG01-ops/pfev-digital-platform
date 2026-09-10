@@ -20,9 +20,11 @@ export default async function handler(request, response) {
         method: 'POST',
 
         headers: {
-          'Content-Type': 'application/json',
-          'X-PFEV-Secret': process.env.N8N_AI_WEBHOOK_SECRET
-        },
+  'Content-Type': 'application/json',
+  'Authorization': `Basic ${Buffer.from(
+    `${process.env.N8N_BASIC_USER}:${process.env.N8N_BASIC_PASSWORD}`
+  ).toString('base64')}`
+},
 
         body: JSON.stringify({
           input: input.trim()
