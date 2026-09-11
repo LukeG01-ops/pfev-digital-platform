@@ -6,7 +6,7 @@ Il progetto combina frontend, API, automazioni, database e integrazione AI. Ques
 
 ## Live Demo
 
-https://pfev-digital-platform.vercel.app
+https://shift-flow-project.vercel.app
 
 ## Funzionalità principali
 
