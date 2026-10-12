@@ -12,26 +12,6 @@ export function setupExperience() {
   let open = false,
     paused = Boolean(reduced?.matches),
     frame = 0;
-  const themes = [
-    {
-      title: "Shift Flow",
-      line: "Il tuo ritmo, prima del calendario.",
-      inside:
-        "Partire dall’energia che hai. Scegliere l’essenziale. Lasciare spazio al recupero.",
-    },
-    {
-      title: "Shift Flow Relactions",
-      line: "Esserci, senza perderti.",
-      inside:
-        "Dare spazio alle persone. Comunicare i propri limiti. Scegliere una presenza sostenibile, senza rincorrere quella perfetta.",
-    },
-    {
-      title: "Shift Flow Evolve",
-      line: "Cambia il passo. Non perdere il filo.",
-      inside:
-        "Osservare cosa cambia. Ridimensionare il piano. Crescere attraverso piccoli aggiustamenti, senza ricominciare ogni volta.",
-    },
-  ];
   function setOpen(value) {
     open = value;
     book.classList.toggle("is-open", open);
@@ -44,20 +24,19 @@ export function setupExperience() {
     cover.setAttribute("aria-hidden", String(open));
   }
   function selectVolume(index) {
-    const v = volumes[index],
-      t = themes[index];
+    const v = volumes[index];
     if (!v) return;
     setOpen(false);
     hero.dataset.volume = String(index);
     cover.src = new URL(`/books/${v.image}`, location.href).href;
-    cover.alt = `Copertina originale di ${v.name}`;
+    cover.alt = `Copertina di ${v.name}`;
     document.querySelector("#bookSpine").textContent = v.name;
     document.querySelector("#volumeNumber").textContent =
-      `VOLUME 0${index + 1} / 03`;
-    document.querySelector("#volumeTitle").textContent = t.title;
-    document.querySelector("#volumeTheme").textContent = t.line;
-    document.querySelector("#insideTitle").textContent = t.line;
-    document.querySelector("#insideCopy").textContent = t.inside;
+      volumes.length > 1 ? `LIBRO ${index + 1} DI ${volumes.length}` : 'IL LIBRO DA CUI COMINCIARE';
+    document.querySelector("#volumeTitle").textContent = v.name;
+    document.querySelector("#volumeTheme").textContent = v.line;
+    document.querySelector("#insideTitle").textContent = v.line;
+    document.querySelector("#insideCopy").textContent = v.inside;
     document
       .querySelectorAll("[data-volume-select]")
       .forEach((b) =>
@@ -86,7 +65,7 @@ export function setupExperience() {
       hero.scrollIntoView({ behavior: paused ? "instant" : "smooth" });
       document
         .querySelector(`[data-volume-select="${i}"]`)
-        .focus({ preventScroll: true });
+        ?.focus({ preventScroll: true });
     }),
   );
   openButton.addEventListener("click", () => setOpen(!open));
@@ -208,19 +187,6 @@ export function setupExperience() {
         .forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
     }),
   );
-  const tech = document.querySelector("#techDetails");
-  function openTech() {
-    tech.open = true;
-  }
-  document
-    .querySelectorAll("[data-open-tech]")
-    .forEach((a) => a.addEventListener("click", openTech));
-  if (location.hash === "#tech" || location.hash === "#tech-content")
-    openTech();
-  window.addEventListener("hashchange", () => {
-    if (location.hash === "#tech" || location.hash === "#tech-content")
-      openTech();
-  });
   let scrollFrame = 0;
   function scrollUpdate() {
     scrollFrame = 0;

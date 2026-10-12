@@ -52,4 +52,11 @@ const books = [
   },
 ];
 
-export const volumes = [books[0], books[2], books[1]];
+// Add any number of volumes here. Only visible entries enter the public library.
+export const library = [
+  { ...books[0], id: 'shift-flow', name: 'Shift Flow', visible: true, line: 'Il tuo ritmo, prima del calendario.', inside: 'Partire dall’energia che hai. Scegliere l’essenziale. Lasciare spazio al recupero.', shopId: 'libro' },
+  { ...books[2], id: 'relactions', name: 'Shift Flow Relactions', visible: false, line: 'Esserci, senza perderti.', inside: 'Dare spazio alle persone. Comunicare i propri limiti. Scegliere una presenza sostenibile.', shopId: null },
+  { ...books[1], id: 'evolve', name: 'Shift Flow Evolve', visible: false, line: 'Cambia il passo. Non perdere il filo.', inside: 'Osservare cosa cambia. Ridimensionare il piano. Crescere attraverso piccoli aggiustamenti.', shopId: null },
+];
+export const volumes = library.filter(book => book.visible);
+export const bookNavLabel = volumes.length === 1 ? 'Il libro' : 'I libri';
