@@ -2,7 +2,7 @@ const books = [
   {
     name: "SHIFT-FLOW",
     subtitle: "Il punto di partenza.",
-    image: "shift-flow-4-3.png",
+    image: "shift-flow-cover.png",
     class: "base",
     tags: "Turni · Energia · Pianificazione",
     description:
