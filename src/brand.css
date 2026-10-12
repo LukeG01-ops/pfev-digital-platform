@@ -3,6 +3,10 @@
 .eyebrow { display:block; font-size:.72rem; letter-spacing:.13em; font-weight:600; margin-bottom:18px; color:var(--muted); }
 .section-heading > div { min-width:0; }
 .brand-path { margin-top:12px; color:var(--muted); font-size:.94rem; }
+.book-object[role="button"] { cursor:pointer; }
+.book-object[role="button"]:focus-visible { outline:3px solid var(--coral-ink); outline-offset:10px; }
+.book-hint { margin:12px 0 0; color:var(--coral-ink); font-size:.82rem; }
+.book-caption #volumeTheme { max-width:370px; margin-inline:auto; }
 .navbar nav { gap:22px; }
 .navbar { gap:24px; }
 .hero-index .volume-tabs { flex-wrap:wrap; }

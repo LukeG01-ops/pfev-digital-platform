@@ -24,19 +24,20 @@ export function renderPage(icon) {
           <div class="hero-index"><span>IL METODO PRENDE FORMA NELLA TUA VITA</span>${volumes.length > 1 ? `<div class="volume-tabs" role="group" aria-label="Scegli un libro">${volumes.map((b,i)=>`<button data-volume-select="${i}" aria-pressed="${i===0}">${b.name}</button>`).join('')}</div>` : '<p class="brand-path">Leggi. Sperimenta. Trova il tuo passo.</p>'}</div>
         </div>
         <div class="book-experience">
-          <div class="book-viewer" id="bookViewer" aria-label="Modello interattivo del libro, usa i controlli sotto per ruotarlo o aprirlo">
+          <div class="book-viewer" id="bookViewer" aria-label="Libro interattivo in 3D">
             <div class="book-halo" aria-hidden="true"></div>
-            <div class="book-float"><div class="book-object" id="heroBook">
+            <div class="book-float"><div class="book-object" id="heroBook" role="button" tabindex="0" aria-label="Apri il libro Shift Flow" aria-expanded="false" aria-controls="bookInterior" aria-describedby="bookHint">
               <div class="book-back" aria-hidden="true"></div><div class="book-spine" aria-hidden="true"><span id="bookSpine">SHIFT FLOW</span><small>LUCA GUIDO</small></div>
               <div class="book-pages" aria-hidden="true"></div>
               <div class="book-interior" id="bookInterior" aria-hidden="true"><span class="interior-label">IL CUORE DEL LIBRO</span><h2 id="insideTitle">Il tuo ritmo,<br>prima del calendario.</h2><p id="insideCopy">Partire dall’energia che hai. Scegliere l’essenziale. Lasciare spazio al recupero.</p><span class="interior-footer">SHIFT FLOW · LUCA GUIDO</span></div>
-              <div class="book-front" id="bookFront"><img id="heroCover" src="/books/shift-flow.png" alt="Copertina originale di Shift Flow" width="816" height="1158" fetchpriority="high"/><div class="cover-back" aria-hidden="true"><span>Shift Flow</span><p>Un metodo che si adatta alla vita.<br>Non il contrario.</p></div></div>
+              <div class="book-front" id="bookFront"><img id="heroCover" src="/books/${volumes[0].image}" alt="Frontespizio di Shift Flow, edizione 4.3" width="1000" height="1419" fetchpriority="high"/><div class="cover-back" aria-hidden="true"><span>Shift Flow</span><p>Un metodo che si adatta alla vita.<br>Non il contrario.</p></div></div>
             </div></div>
             <span class="book-ground" aria-hidden="true"></span>
           </div>
-          <div class="book-caption" aria-live="polite"><span id="volumeNumber">IL LIBRO DA CUI COMINCIARE</span><h2 id="volumeTitle">Shift Flow</h2><p id="volumeTheme">Il tuo ritmo, prima del calendario.</p></div>
-          <div class="book-controls"><button id="openBook" aria-expanded="false" aria-controls="bookInterior">Apri il libro ${icon("plus")}</button><div class="rotation-control"><label for="bookRotation">Ruota</label><input id="bookRotation" type="range" min="-38" max="28" value="-20" aria-label="Ruota il libro in 3D"/></div><button id="motionToggle" aria-pressed="false" aria-label="Pausa animazioni">Pausa</button></div>
-          <p class="viewer-note">Anteprima del libro · Copertina provvisoria e interno dimostrativo</p>
+          <p id="bookHint" class="book-hint">Tocca o clicca il libro per aprirlo</p>
+          <div class="book-caption" aria-live="polite"><span id="volumeNumber">IL LIBRO DA CUI COMINCIARE</span><h2 id="volumeTitle">Shift Flow</h2><p id="volumeTheme">${volumes[0].line}</p></div>
+          <div class="book-controls"><div class="rotation-control"><label for="bookRotation">Ruota</label><input id="bookRotation" type="range" min="-38" max="28" value="-20" aria-label="Ruota il libro in 3D"/></div><button id="motionToggle" aria-pressed="false" aria-label="Pausa animazioni">Pausa</button></div>
+          <p class="viewer-note">Frontespizio dell’edizione 4.3 · Interno dimostrativo</p>
         </div>
       </div>
       <div class="hero-bottom wrap"><p>Non fare di più. <strong>Fai spazio a ciò che conta.</strong></p><a href="#progetto">Il punto di partenza ${icon("arrow", "down")}</a></div>

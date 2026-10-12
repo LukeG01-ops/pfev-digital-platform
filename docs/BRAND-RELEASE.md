@@ -2,6 +2,8 @@
 
 La versione pubblica presenta un libro, il metodo, il Planner AI, un catalogo di proposte digitali e uno spazio per guide audio. I volumi non ancora pronti restano fuori dalla pagina. Lo shop e gli audio sono dichiarati in preparazione.
 
+L’anteprima del primo libro usa la prima pagina del PDF 4.3 fornito dall’autore, rasterizzata senza modificare il manoscritto: titolo e sottotitoli aggiornati, nome autore e nessun numero di pagina. Il PDF contiene un frontespizio senza illustrazione, da sostituire con la copertina definitiva quando sarà pronta. Il libro si apre e chiude cliccando o toccando l’oggetto; da tastiera funzionano Invio e Spazio. La dicitura visibile e l’etichetta accessibile seguono lo stato di apertura. Il pulsante separato è rimosso.
+
 ## Aggiungere libri, anche oltre la trilogia
 
 `src/books.js`: aggiungere una voce a `library` con un ID univoco, `visible`, nome, copertina, descrizione, `line`, `inside`, `ideas` e `shopId`. Soltanto `visible: true` entra nella libreria. Con un libro il menu dice “Il libro”; con più libri dice “I libri” e compaiono galleria e selettore 3D. Nessun limite a tre volumi.

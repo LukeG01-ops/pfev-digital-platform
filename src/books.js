@@ -2,7 +2,7 @@ const books = [
   {
     name: "SHIFT-FLOW",
     subtitle: "Il punto di partenza.",
-    image: "shift-flow.png",
+    image: "shift-flow-4-3.png",
     class: "base",
     tags: "Turni · Energia · Pianificazione",
     description:
@@ -54,7 +54,7 @@ const books = [
 
 // Add any number of volumes here. Only visible entries enter the public library.
 export const library = [
-  { ...books[0], id: 'shift-flow', name: 'Shift Flow', visible: true, line: 'Il tuo ritmo, prima del calendario.', inside: 'Partire dall’energia che hai. Scegliere l’essenziale. Lasciare spazio al recupero.', shopId: 'libro' },
+  { ...books[0], id: 'shift-flow', name: 'Shift Flow', visible: true, line: 'Organizza la tua vita secondo le tue energie non col calendario', insideTitle: 'Il tuo ritmo, prima del calendario.', inside: 'Partire dall’energia che hai. Scegliere l’essenziale. Lasciare spazio al recupero.', shopId: 'libro' },
   { ...books[2], id: 'relactions', name: 'Shift Flow Relactions', visible: false, line: 'Esserci, senza perderti.', inside: 'Dare spazio alle persone. Comunicare i propri limiti. Scegliere una presenza sostenibile.', shopId: null },
   { ...books[1], id: 'evolve', name: 'Shift Flow Evolve', visible: false, line: 'Cambia il passo. Non perdere il filo.', inside: 'Osservare cosa cambia. Ridimensionare il piano. Crescere attraverso piccoli aggiustamenti.', shopId: null },
 ];

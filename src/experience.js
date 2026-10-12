@@ -6,26 +6,27 @@ export function setupExperience() {
   const viewer = document.querySelector("#bookViewer");
   const cover = document.querySelector("#heroCover");
   const rotation = document.querySelector("#bookRotation");
-  const openButton = document.querySelector("#openBook");
+  const bookHint = document.querySelector("#bookHint");
   const interior = document.querySelector("#bookInterior");
   const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)");
   let open = false,
     paused = Boolean(reduced?.matches),
-    frame = 0;
+    frame = 0,
+    activeTitle = volumes[0].name;
   function setOpen(value) {
     open = value;
     book.classList.toggle("is-open", open);
     viewer.classList.toggle("is-open", open);
-    openButton.setAttribute("aria-expanded", String(open));
-    openButton.firstChild.textContent = open
-      ? "Chiudi il libro "
-      : "Apri il libro ";
+    book.setAttribute("aria-expanded", String(open));
+    book.setAttribute("aria-label", `${open ? 'Chiudi' : 'Apri'} il libro ${activeTitle}`);
+    bookHint.textContent = `Tocca o clicca il libro per ${open ? 'chiuderlo' : 'aprirlo'}`;
     interior.setAttribute("aria-hidden", String(!open));
     cover.setAttribute("aria-hidden", String(open));
   }
   function selectVolume(index) {
     const v = volumes[index];
     if (!v) return;
+    activeTitle = v.name;
     setOpen(false);
     hero.dataset.volume = String(index);
     cover.src = new URL(`/books/${v.image}`, location.href).href;
@@ -35,7 +36,7 @@ export function setupExperience() {
       volumes.length > 1 ? `LIBRO ${index + 1} DI ${volumes.length}` : 'IL LIBRO DA CUI COMINCIARE';
     document.querySelector("#volumeTitle").textContent = v.name;
     document.querySelector("#volumeTheme").textContent = v.line;
-    document.querySelector("#insideTitle").textContent = v.line;
+    document.querySelector("#insideTitle").textContent = v.insideTitle || v.line;
     document.querySelector("#insideCopy").textContent = v.inside;
     document
       .querySelectorAll("[data-volume-select]")
@@ -68,7 +69,13 @@ export function setupExperience() {
         ?.focus({ preventScroll: true });
     }),
   );
-  openButton.addEventListener("click", () => setOpen(!open));
+  book.addEventListener("click", () => setOpen(!open));
+  book.addEventListener("keydown", event => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      setOpen(!open);
+    }
+  });
   rotation.addEventListener("input", () => {
     book.style.setProperty("--book-ry", `${rotation.value}deg`);
     book.style.setProperty("--book-rx", "-5deg");
