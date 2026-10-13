@@ -18,7 +18,17 @@ Non inserire PDF a pagamento dentro `public/`: sarebbero liberamente scaricabili
 
 Il 13 ottobre 2026: i tre kit 1.0 sono stati inseriti nel catalogo con contenuti effettivi, formato A4 compilabile e conteggi di 12, 14 e 12 pagine. `status: review` comunica che sono in revisione e mantiene gli acquisti disattivati. Ogni kit ha tre immagini di pagine reali in `public/kits/`: copertina, esempio compilato e una scheda. Nel dialogo sono esplorabili e ingrandibili; non sono i PDF completi.
 
-Il repository GitHub è pubblico. I file integrali sono preparati soltanto in `private-products/`, escluso da Git e dalla cartella statica Vite. Non sono ancora caricati in un servizio di consegna protetta. Per attivare la vendita serve prima scegliere/configurare la piattaforma, caricare lì i PDF, impostare prezzo e checkout e approvare la revisione editoriale. `previewAvailable` accetta soltanto immagini locali curate; nessun collegamento pubblico ai file completi.
+Il repository GitHub è pubblico. Le copie locali dei file integrali sono in `private-products/`, escluso da Git, dalla cartella statica Vite e dagli upload di deployment tramite `.vercelignore`. I tre PDF 1.1 sono caricati nello store Vercel Blob **privato** `shift-flow-kits-private`, collegato al progetto per produzione e sviluppo. I percorsi sono `kits/v1.1/Shift-Flow-settimana-flessibile.pdf`, `kits/v1.1/Shift-Flow-spazio-al-recupero.pdf` e `kits/v1.1/Shift-Flow-ascolta-la-tua-energia.pdf`. Gli accessi anonimi restituiscono HTTP 403. Nessun endpoint pubblico distribuisce questi file.
+
+Per attivare la vendita serve scegliere/configurare pagamento e autorizzazione della consegna, impostare prezzo e checkout e approvare la revisione editoriale. Il solo caricamento privato non crea un sistema di e-commerce. Non mettere token Blob nel frontend: la futura consegna deve essere autorizzata dal server dopo l'acquisto. `previewAvailable` accetta soltanto immagini locali curate; nessun collegamento pubblico ai file completi. Le credenziali sono gestite da Vercel e restano escluse da Git.
+
+Le copertine 1.1 mantengono stile, font e palette comuni ma hanno disegni vettoriali distinti: percorso flessibile, luna e bussola. Le immagini pubbliche di copertina hanno suffisso `-v1-1` per evitare di mostrare la vecchia versione dalla cache. Le pagine operative interne e i 241 campi restano invariati.
+
+## Pubblicazione del 13 ottobre 2026
+
+Deployment di produzione riuscito tramite CLI sul progetto esistente `luca-fdfc/pfev-digital-platform`, con alias `https://shift-flow-project.vercel.app`. Ultimo deployment verificato: `dpl_J53mVPSLLCcTzkmExq6wNjuBahvh`, stato READY. Il progetto non era collegato a GitHub: un push al repository da solo non pubblica il sito. La CLI è ora collegata al progetto; per aggiornamenti successivi usare un deployment esplicito o concordare il collegamento Git.
+
+16 test superati e build riuscita. Anteprime reali verificate nel browser, anche su mobile, senza overflow orizzontale; acquisti nascosti per i kit in revisione. La copertina del libro usa l'immagine dell'autore. La funzione Planner mantiene la configurazione precedente e risponde HTTP 405 a GET come previsto; non è stata eseguita una nuova generazione AI reale in questa verifica.
 
 ## Audio
 
