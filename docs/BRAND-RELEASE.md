@@ -30,6 +30,14 @@ Deployment di produzione riuscito tramite CLI sul progetto esistente `luca-fdfc/
 
 16 test superati e build riuscita. Anteprime reali verificate nel browser, anche su mobile, senza overflow orizzontale; acquisti nascosti per i kit in revisione. La copertina del libro usa l'immagine dell'autore. La funzione Planner mantiene la configurazione precedente e risponde HTTP 405 a GET come previsto; non è stata eseguita una nuova generazione AI reale in questa verifica.
 
+## Schede shop - aggiornamento successivo del 13 ottobre
+
+Le quattro schede prodotto si aprono ora da copertina cliccabile o “Esplora”, con link condivisibili `#prodotto/<id>`, analisi editoriale, contenuti, istruzioni, due pagine di anteprima e area prezzo/acquisto. Anche il libro ha una scheda e un estratto reale del capitolo 4; non viene distribuito il manoscritto completo.
+
+L'autore ha confermato che i prezzi non sono ancora decisi e non ha ancora un account di pagamento. Compare “Prezzo da definire”; i pulsanti “Acquista su Amazon” e “Acquista il PDF” sono visibili ma disabilitati. La selezione/attivazione del provider e la consegna autenticata sono ancora da realizzare: l'interfaccia non è un pagamento funzionante. Per il libro serve l'articolo Amazon esatto, non un link di ricerca. Nessun account finanziario o pagamento è stato creato.
+
+21 test superati e build riuscita. Verificati apertura delle quattro schede, chiusura con Escape, link diretti anche dopo ricarica e layout mobile senza overflow. Il collegamento Amazon richiede ASIN nell'URL e dominio autentico; la visualizzazione di un acquisto digitale richiede un checkout noto e la conferma operativa della consegna. Queste regole frontend non sostituiscono l'autorizzazione del download sul server. I passi mancanti e il confronto dei servizi sono documentati in `docs/SHOP-SETUP.md`.
+
 ## Audio
 
 Le voci di `episodes` possono essere aumentate senza riscrivere la pagina. `source: null` mostra la descrizione in preparazione. Con una sorgente reale pubblica HTTPS o un percorso locale compaiono player e trascrizione opzionale; `preload="none"` evita download anticipati. Una guida in riproduzione mette in pausa le altre.

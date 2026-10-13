@@ -1,5 +1,6 @@
-import { products, purchaseAvailable, previewAvailable } from './catalog.js';
+import { products, purchaseAvailable, previewAvailable, priceLabel, validPrice } from './catalog.js';
 import { chapters, referenceEdition } from './book-references.js';
+import { detailsFor, productHash, productIdFromHash } from './product-details.js';
 
 export function showReadings(ids) {
   const panel = document.querySelector('#recommendedReading');
@@ -36,22 +37,35 @@ export function setupBrand() {
     document.querySelectorAll('[data-filter]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
     document.querySelector('#catalogCount').textContent = `${count} ${count === 1 ? 'proposta' : 'proposte'}`;
   }));
-  document.querySelectorAll('[data-product]').forEach(b => b.addEventListener('click', () => {
-    const product = products.find(p => p.id === b.dataset.product);
-    if (!product) return;
+  let productTrigger = null;
+  function fillList(id, values) {
+    const list = document.querySelector(id);
+    list.replaceChildren();
+    values.forEach(text => { const li = document.createElement('li'); li.textContent = text; list.append(li); });
+  }
+  function openProduct(product, updateHistory = true) {
+    const detail = detailsFor(product);
+    const isBook = product.category === 'libro';
     document.querySelector('#productFormat').textContent = product.format;
     document.querySelector('#productTitle').textContent = product.title;
-    document.querySelector('#productDescription').textContent = product.description;
-    const list = document.querySelector('#productContents'); list.replaceChildren();
-    product.contents.forEach(text => { const li = document.createElement('li'); li.textContent = text; list.append(li); });
+    document.querySelector('#productSubtitle').textContent = product.subtitle || '';
+    for (const [id, value] of [['#productAudience',detail.audience],['#productOverview',detail.overview],['#productRelation',detail.relation],['#productLimitation',detail.limitation],['#productDelivery',detail.delivery]]) {
+      document.querySelector(id).textContent = value;
+    }
+    fillList('#productContents', product.contents);
+    fillList('#productBenefits', detail.benefits);
+    fillList('#productSteps', detail.steps);
     const hasPreview = previewAvailable(product);
-    document.querySelector('#productContentsTitle').textContent = hasPreview ? 'Nel kit' : 'Contenuti previsti';
+    const cover = document.querySelector('#productCover');
+    cover.src = isBook ? `/books/${product.image}` : (hasPreview ? product.previewPages[0].image : '');
+    cover.alt = `Copertina di ${product.title}`;
+    cover.hidden = !cover.getAttribute('src');
     const preview = document.querySelector('#productPreview');
     const pages = document.querySelector('#productPreviewPages');
-    preview.open = false;
     preview.hidden = !hasPreview;
     pages.replaceChildren();
-    if (hasPreview) product.previewPages.forEach((page, index) => {
+    document.querySelector('#productPreviewNote').textContent = isBook ? 'Due pagine selezionate del manoscritto. Ingrandisci per leggere l’estratto: non è il libro completo.' : 'Due pagine reali del kit: un esempio e una scheda. Ingrandisci per leggerle; il PDF completo comprende anche le altre pagine.';
+    if (hasPreview) product.previewPages.slice(1).forEach((page, index) => {
       const figure = document.createElement('figure');
       const link = document.createElement('a');
       link.href = page.image;
@@ -65,7 +79,7 @@ export function setupBrand() {
       img.height = 1100;
       img.loading = 'lazy';
       const caption = document.createElement('figcaption');
-      caption.textContent = `${index + 1} / ${product.previewPages.length} · ${page.caption}`;
+      caption.textContent = `${index + 1} / ${product.previewPages.length - 1} · ${page.caption}`;
       const hint = document.createElement('span');
       hint.className = 'preview-enlarge';
       hint.textContent = 'Ingrandisci ↗';
@@ -75,22 +89,61 @@ export function setupBrand() {
     });
     const available = purchaseAvailable(product);
     const purchase = document.querySelector('#purchaseLink');
+    const pending = document.querySelector('#purchasePending');
+    const buyText = isBook ? 'Acquista su Amazon' : 'Acquista il PDF';
+    document.querySelector('#productPrice').textContent = priceLabel(product);
+    document.querySelector('#productPrice').classList.toggle('price-pending', !validPrice(product.price));
+    document.querySelector('#purchaseChannel').textContent = isBook ? 'LIBRO · AMAZON' : 'PRODOTTO DIGITALE · PDF';
     purchase.hidden = !available;
+    pending.hidden = available;
+    pending.textContent = buyText;
+    purchase.textContent = buyText;
     purchase.removeAttribute('href');
     if (available) {
-      purchase.href = product.checkoutUrl;
-      purchase.textContent = `Acquista · ${new Intl.NumberFormat('it-IT', { style:'currency',currency:'EUR' }).format(product.price)}`;
+      purchase.href = isBook ? product.amazonUrl : product.checkoutUrl;
     }
-    document.querySelector('#productStatus').textContent = available ? 'Prosegui sul sito di pagamento per acquistare.' : hasPreview ? 'Versione in revisione editoriale. L’anteprima mostra alcune pagine reali; il PDF completo sarà disponibile quando saranno attivati acquisto e consegna.' : 'In preparazione. Ti presenteremo contenuti definitivi e prezzo quando sarà pronto.';
-    dialog.showModal();
+    document.querySelector('#productStatus').textContent = available ? (isBook ? 'Si aprirà la scheda Amazon del libro in una nuova finestra.' : 'Si aprirà il checkout. Il file completo viene consegnato soltanto dopo la conferma del pagamento.') : (isBook ? 'Il libro sarà acquistabile su Amazon dopo la pubblicazione. Prezzo e collegamento all’articolo non sono ancora disponibili.' : 'L’anteprima è disponibile. Prezzo, pagamento e scaricamento del PDF completo non sono ancora attivi.');
+    document.querySelector('#purchaseNotice').textContent = isBook ? 'Il prezzo finale e la disponibilità saranno confermati su Amazon.' : 'Le anteprime sono pubbliche. I file completi restano privati: questa scheda non abilita un download gratuito.';
+    dialog.dataset.product = product.id;
+    if (updateHistory && location.hash !== productHash(product.id)) {
+      history.pushState({...history.state, shopProduct:product.id}, '', productHash(product.id));
+    }
+    if (!dialog.open) dialog.showModal();
+    dialog.scrollTop = 0;
+  }
+  function closeProduct() {
+    if (productIdFromHash(location.hash) && history.state?.shopProduct === dialog.dataset.product) {
+      history.back();
+    } else {
+      if (productIdFromHash(location.hash)) history.replaceState(history.state, '', '#shop');
+      dialog.close();
+      if (productTrigger) productTrigger.focus({preventScroll:true});
+      else document.querySelector('#shop').scrollIntoView({behavior:'instant',block:'start'});
+    }
+  }
+  function restoreProductRoute() {
+    const id = productIdFromHash(location.hash);
+    const product = products.find(p => p.id === id);
+    if (product) openProduct(product, false);
+    else if (dialog.open) { dialog.close(); productTrigger?.focus({preventScroll:true}); }
+  }
+  document.querySelectorAll('[data-product]').forEach(b => b.addEventListener('click', () => {
+    const product = products.find(p => p.id === b.dataset.product);
+    if (!product) return;
+    productTrigger = b;
+    openProduct(product);
   }));
-  dialog.querySelector('.dialog-close').addEventListener('click', () => dialog.close());
-  document.querySelector('#closeProduct').addEventListener('click', () => dialog.close());
+  dialog.querySelector('.dialog-close').addEventListener('click', closeProduct);
+  document.querySelector('#closeProduct').addEventListener('click', closeProduct);
+  dialog.addEventListener('cancel', event => { event.preventDefault(); closeProduct(); });
   dialog.addEventListener('click', event => {
     if (event.target !== dialog) return;
     const box = dialog.getBoundingClientRect();
-    if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) dialog.close();
+    if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) closeProduct();
   });
+  window.addEventListener('popstate', restoreProductRoute);
+  window.addEventListener('hashchange', restoreProductRoute);
+  restoreProductRoute();
   document.querySelectorAll('a[href^="#cap-"]').forEach(a => a.addEventListener('click', () => {
     const chapter = document.getElementById(a.hash.slice(1));
     if (chapter) chapter.open = true;

@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { recommendChapters, chapters, referenceEdition } from '../src/book-references.js';
-import { products, episodes, purchaseAvailable, previewAvailable, audioAvailable } from '../src/catalog.js';
+import { products, episodes, purchaseAvailable, previewAvailable, priceLabel, validPrice, amazonProductUrl, digitalCheckoutUrl, audioAvailable } from '../src/catalog.js';
+import { detailsFor, productHash, productIdFromHash } from '../src/product-details.js';
 import { existsSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { volumes } from '../src/books.js';
@@ -29,7 +30,7 @@ test('unfinished products never expose a purchase even with a stray checkout URL
   assert.equal(purchaseAvailable({status:'coming-soon',price:12,checkoutUrl:'https://checkout.example.test'}), false);
   assert.equal(purchaseAvailable({status:'available',price:null,checkoutUrl:'https://checkout.example.test'}), false);
   assert.equal(purchaseAvailable({status:'available',price:12,checkoutUrl:'javascript:alert(1)'}), false);
-  assert.equal(purchaseAvailable({status:'available',price:12,checkoutUrl:'https://checkout.example.test'}), true);
+  assert.equal(purchaseAvailable({status:'available',price:12,checkoutUrl:'https://checkout.example.test'}), false);
   assert.equal(purchaseAvailable({status:'review',price:12,checkoutUrl:'https://checkout.example.test'}), false);
 });
 test('all three kits have actual public samples, not complete paid PDF links', () => {
@@ -49,9 +50,55 @@ test('all three kits have actual public samples, not complete paid PDF links', (
   const publicFiles = readdirSync(fileURLToPath(new URL('../public', import.meta.url)), {recursive:true});
   assert.ok(publicFiles.every(path => !String(path).toLowerCase().endsWith('.pdf')));
   const html = shopMarkup(() => '');
-  assert.equal((html.match(/Anteprima disponibile/g) || []).length, 3);
+  assert.equal((html.match(/Prezzo da definire/g) || []).length, 4);
   assert.doesNotMatch(html, /href="[^\"]*\.pdf/i);
   assert.match(html, /in revisione editoriale/);
+});
+test('all four products have editorial details, preview and a discoverable purchase area', () => {
+  const html = shopMarkup(() => '');
+  for (const p of products) {
+    const d = detailsFor(p);
+    assert.ok(d.overview.length > 100);
+    assert.ok(d.audience.length > 30);
+    assert.equal(d.steps.length, 3);
+    assert.ok(d.relation && d.limitation && d.delivery);
+    assert.equal(previewAvailable(p), true);
+    assert.match(html, new RegExp(`aria-label="Esplora ${p.title}"`));
+    for (const page of p.previewPages) assert.ok(existsSync(fileURLToPath(new URL(`../public${page.image}`,import.meta.url))));
+  }
+  assert.match(html, /id="productPrice"/);
+  assert.match(html, /id="purchasePending"[^>]*disabled/);
+  assert.match(html, /id="purchaseLink"[^>]*hidden/);
+  assert.equal((html.match(/>Esplora /g) || []).length, 4);
+});
+test('prices are never invented and only valid euro amounts are displayed', () => {
+  for (const p of products) assert.equal(priceLabel(p), 'Prezzo da definire');
+  assert.match(priceLabel({price:9.9}), /9,90/);
+  for (const price of [null,undefined,NaN,Infinity,-1,0,'9.99',1.123]) assert.equal(validPrice(price), false);
+});
+test('Amazon purchases require a real article URL, price and published state', () => {
+  const ready = {category:'libro',status:'available',price:18,amazonUrl:'https://www.amazon.it/dp/B0TEST1234'};
+  assert.equal(purchaseAvailable(ready), true);
+  for (const amazonUrl of ['https://amazon.it/','https://amazon.it/s?k=shift+flow','https://amazon.it.evil.test/dp/B0TEST1234','https://evil.test/amazon.it/dp/B0TEST1234','javascript:alert(1)','https://user:secret@amazon.it/dp/B0TEST1234']) {
+    assert.equal(amazonProductUrl(amazonUrl), false);
+    assert.equal(purchaseAvailable({...ready,amazonUrl}), false);
+  }
+  assert.equal(purchaseAvailable({...ready,status:'coming-soon'}), false);
+  assert.equal(purchaseAvailable({...ready,price:null}), false);
+});
+test('digital purchases require a known checkout and confirmed delivery readiness', () => {
+  const ready = {category:'organizzazione',status:'available',price:8.5,purchaseProvider:'stripe',deliveryReady:true,checkoutUrl:'https://buy.stripe.com/example'};
+  assert.equal(purchaseAvailable(ready), true);
+  assert.equal(purchaseAvailable({...ready,deliveryReady:false}), false);
+  assert.equal(purchaseAvailable({...ready,purchaseProvider:null}), false);
+  assert.equal(purchaseAvailable({...ready,status:'review'}), false);
+  assert.equal(digitalCheckoutUrl('https://store.lemonsqueezy.com/buy/123-abc','lemon-squeezy'), true);
+  for (const checkoutUrl of ['https://buy.stripe.com.evil.test/example','https://stripe.com/pricing','https://evil.test/','http://buy.stripe.com/example']) assert.equal(digitalCheckoutUrl(checkoutUrl,'stripe'), false);
+});
+test('product detail URLs are shareable and reject unrecognised route formats', () => {
+  for (const p of products) assert.equal(productIdFromHash(productHash(p.id)), p.id);
+  for (const hash of ['#shop','#prodotto/','#prodotto/<script>','#prodotto/../private','#prodotto/planning?secret=x']) assert.equal(productIdFromHash(hash), null);
+  assert.throws(()=>productHash('../escape'));
 });
 test('preview paths only accept curated local kit samples', () => {
   assert.equal(previewAvailable({}), false);
