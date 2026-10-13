@@ -15,5 +15,8 @@
 .reader-discount input {margin-top:4px;flex-shrink:0}
 .bonus-message {font-size:13px!important;min-height:20px}
 .episode video {width:100%;border-radius:12px;margin-top:12px}
+.audio-section .episode .text-link {background:transparent;border:0;border-bottom:1px solid #88aaa2;color:#c7e3d8;padding:8px 0;font:inherit;font-weight:600;cursor:pointer;text-align:left}
+.audio-section .audio-intro > .button {background:#c7e3d8;color:#1d3530;border:1px solid #c7e3d8;font:inherit;font-weight:600;margin-top:14px}
+.audio-section button:focus-visible {outline:2px solid #c7e3d8;outline-offset:5px}
 .account-trigger {font:inherit;cursor:pointer;white-space:nowrap;background:transparent;border:1px solid #b6bdb6;border-radius:999px;padding:10px 16px;color:inherit}
 @media(max-width:760px) {.member-dialog{padding:42px 22px 24px}.member-dialog h2{font-size:34px}.account-trigger{font-size:13px;padding:8px 12px}.navbar{gap:12px}}
