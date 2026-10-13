@@ -53,7 +53,23 @@ details[open] > summary > .icon { transform:rotate(45deg); }
 .product-info h3 { font:400 1.6rem/1.15 'Bodoni Moda',Georgia,serif; }
 .product-info > p { font-size:.91rem; color:var(--muted); margin:15px 0 22px; min-height:92px; }
 .product-info > .kit-format { font-size:.73rem; min-height:0; margin:0 0 16px; }
-.product-bottom { border-top:1px solid var(--line); padding-top:16px; display:flex; justify-content:space-between; gap:10px; align-items:center; }
+.product-bottom { border-top:1px solid var(--line); padding-top:16px; display:flex; justify-content:flex-end; gap:10px; align-items:center; }
+.offer-badge { display:inline-block; padding:6px 9px; background:#efe0d9; color:var(--coral-ink); font-size:.72rem; font-weight:600; letter-spacing:.04em; }
+.product-bottom .offer-badge { margin-right:auto; }
+.product-card[data-category="offerte"] { grid-column:1/-1; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:32px; align-items:center; }
+.product-card[data-category="offerte"] .product-info { padding:0; }
+.product-card[data-category="offerte"] .product-info > p { min-height:0; }
+.art-bundle { background:#e9e6db; }
+.bundle-covers { width:100%; display:flex; justify-content:center; align-items:center; gap:12px; }
+.product-art .bundle-covers img { width:30%; max-width:125px; height:auto; max-height:234px; transform:rotate(0); }
+.product-art .bundle-covers img:first-child { transform:rotate(-7deg) translateY(8px); }
+.product-art .bundle-covers img:last-child { transform:rotate(7deg) translateY(8px); }
+.product-card:hover .bundle-covers img { transform:translateY(-5px); }
+.product-detail-intro.bundle-intro { grid-template-columns:1fr; }
+.product-detail-intro .bundle-covers img { width:29%; max-width:112px; height:auto; }
+.offer-comparison { margin-top:14px; color:var(--muted); font-size:.8rem; line-height:1.5; }
+.offer-comparison s { display:inline-block; margin-top:5px; font-size:1.1rem; }
+.offer-saving { color:var(--coral-ink); font-size:.83rem; line-height:1.5; margin-bottom:20px; }
 .availability-label { color:var(--muted); font-size:.7rem; }
 .product-bottom button { border:0; background:transparent; padding:4px 0; font-size:.84rem; }
 .catalog-note { color:var(--muted); font-size:.81rem; margin:35px 0 0; max-width:790px; }
@@ -167,6 +183,7 @@ dialog li { margin-block:8px; }
   .purchase-card { position:static; }
 }
 @media (max-width:560px) {
+  .product-card[data-category="offerte"] { grid-template-columns:1fr; gap:22px; }
   .product-grid { grid-template-columns:1fr; gap:38px; }
   .product-art { height:290px; }
   .product-info > p { min-height:0; }

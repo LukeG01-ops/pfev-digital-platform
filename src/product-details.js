@@ -1,5 +1,14 @@
 // Editorial descriptions of the real products. No clinical or outcome promises.
 const details = {
+  bundle: {
+    audience: 'Per chi desidera avere a disposizione tutti e tre i quaderni, da usare secondo ciò che serve nella propria settimana.',
+    overview: 'Un unico pacchetto riunisce La tua settimana flessibile, Fai spazio al recupero e Ascolta la tua energia. Sono gli stessi kit disponibili singolarmente, con esempi e schede compilabili: nessun contenuto necessario viene riservato al bundle.',
+    benefits: ['Avere le schede di organizzazione, recupero e consapevolezza nello stesso pacchetto.', 'Scegliere un solo quaderno da cui partire, senza dover usare tutto.', 'Ristampare le schede oppure compilare e salvare i PDF in un lettore compatibile.'],
+    steps: ['Scegli il quaderno che risponde al bisogno più concreto di oggi.', 'Parti dall’esempio e prova una sola scheda.', 'Passa agli altri strumenti solo quando ti sono utili.'],
+    relation: 'Il libro contiene già il metodo e gli esercizi. Il bundle è un’aggiunta facoltativa che rende più comodo riutilizzare le schede; non include il libro cartaceo né l’ebook Kindle.',
+    limitation: 'Strumenti educativi di organizzazione personale, non trattamenti per disturbi del sonno o altre condizioni di salute. Non comprende audio o abbonamenti.',
+    delivery: 'Tre PDF separati e compilabili in A4, per un totale di 38 pagine. Dopo l’attivazione della vendita, un unico acquisto darà accesso a tutti e tre i file con consegna protetta.',
+  },
   libro: {
     audience: 'Per chi lavora a turni e sente che le giornate libere non coincidono sempre con le energie disponibili.',
     overview: 'Shift Flow è il punto di partenza del percorso: non un’agenda da seguire alla lettera, ma un metodo per scegliere cosa chiederti nelle giornate che cambiano ritmo. Spiegazioni, esempi ed esercizi accompagnano il lettore dalla consapevolezza dell’energia alla costruzione del proprio sistema.',

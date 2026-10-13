@@ -19,6 +19,30 @@ export const products = [
   { id: 'energia', category: 'consapevolezza', label: 'Consapevolezza', title: 'Ascolta la tua energia', subtitle: 'Prima osserva. Poi scegli.', description: 'Un diario leggero per riconoscere i tuoi segnali, adattare le richieste e provare brevi pause facoltative di attenzione e meditazione.', format: 'Kit PDF compilabile · A4 · 12 pagine', pages: 12, version: '1.1', contents: ['Bussola personale e diario fino a due settimane', 'Attività in tre versioni, secondo l’energia', 'Due pause facoltative: ambiente e respiro naturale', 'Revisione e piccolo esperimento organizzativo', 'Fonti e limiti: pratiche educative, non terapia'], previewPages: [{image:'/kits/energia-cover-v1-1.png',caption:'La copertina del kit'}, {image:'/kits/energia-example.png',caption:'Da un segnale a una scelta: esempio compilato'}, {image:'/kits/energia-sheet.png',caption:'La prima settimana del diario: una scheda del kit'}], status: 'review', price: 4.9, checkoutUrl: null },
 ];
 
+// One optional bundle of the same three kits: no extra or exclusive content.
+const bundleKits = products.filter(product => ['planning', 'recupero', 'energia'].includes(product.id));
+products.push({
+  id: 'bundle', category: 'offerte', label: 'Offerta · i tre quaderni',
+  title: 'Il kit completo Shift Flow', subtitle: 'Organizzazione, recupero e consapevolezza. Insieme.',
+  description: 'I tre quaderni pratici in un unico pacchetto: scegli l’essenziale, proteggi il recupero e ascolta la tua energia.',
+  format: 'Bundle · 3 PDF compilabili · A4 · 38 pagine totali',
+  bundleItems: bundleKits.map(kit => kit.id),
+  contents: bundleKits.map(kit => `${kit.title} · ${kit.pages} pagine`),
+  previewPages: [bundleKits[0].previewPages[0], ...bundleKits.flatMap(kit => kit.previewPages.slice(1).map(page => ({...page, caption: `${kit.title}: ${page.caption}`})))],
+  status: 'review', price: 11.9, checkoutUrl: null,
+});
+
+export function bundleOffer(product) {
+  if (!Array.isArray(product.bundleItems) || product.bundleItems.length < 2 || !validPrice(product.price)) return null;
+  if (new Set(product.bundleItems).size !== product.bundleItems.length) return null;
+  const kits = product.bundleItems.map(id => products.find(kit => kit.id === id && !kit.bundleItems && kit.category !== 'libro'));
+  if (kits.some(kit => !kit || !validPrice(kit.price))) return null;
+  const separateCents = kits.reduce((total, kit) => total + Math.round(kit.price * 100), 0);
+  const savingCents = separateCents - Math.round(product.price * 100);
+  if (savingCents <= 0) return null;
+  return {separatePrice: separateCents / 100, saving: savingCents / 100, percentage: Math.round(savingCents / separateCents * 100)};
+}
+
 export const episodes = [
   { id: 'rientro', category: 'recupero', title: 'Rientrare, rallentare', description: 'Una guida per lasciare andare la fretta dopo una giornata intensa e ritrovare un momento per te.', theme: 'Dopo il turno', source: null, transcript: null, duration: null },
   { id: 'sonno', category: 'sonno', title: 'Un momento prima del riposo', description: 'Un accompagnamento tranquillo per passare dagli impegni a uno spazio dedicato al riposo.', theme: 'Verso il riposo', source: null, transcript: null, duration: null },

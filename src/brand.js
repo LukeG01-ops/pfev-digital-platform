@@ -1,4 +1,4 @@
-import { products, purchaseAvailable, previewAvailable, priceLabel, validPrice } from './catalog.js';
+import { products, purchaseAvailable, previewAvailable, priceLabel, validPrice, bundleOffer } from './catalog.js';
 import { chapters, referenceEdition } from './book-references.js';
 import { detailsFor, productHash, productIdFromHash } from './product-details.js';
 
@@ -46,6 +46,7 @@ export function setupBrand() {
   function openProduct(product, updateHistory = true) {
     const detail = detailsFor(product);
     const isBook = product.category === 'libro';
+    const isBundle = Array.isArray(product.bundleItems);
     document.querySelector('#productFormat').textContent = product.format;
     document.querySelector('#productTitle').textContent = product.title;
     document.querySelector('#productSubtitle').textContent = product.subtitle || '';
@@ -59,12 +60,27 @@ export function setupBrand() {
     const cover = document.querySelector('#productCover');
     cover.src = isBook ? `/books/${product.image}` : (hasPreview ? product.previewPages[0].image : '');
     cover.alt = `Copertina di ${product.title}`;
-    cover.hidden = !cover.getAttribute('src');
+    cover.hidden = isBundle || !cover.getAttribute('src');
+    const bundleCover = document.querySelector('#productBundleCover');
+    bundleCover.hidden = !isBundle;
+    bundleCover.replaceChildren();
+    document.querySelector('.product-detail-intro').classList.toggle('bundle-intro', isBundle);
+    if (isBundle) product.bundleItems.forEach(id => {
+      const kit = products.find(p => p.id === id);
+      if (!kit || !previewAvailable(kit)) return;
+      const img = document.createElement('img');
+      img.src = kit.previewPages[0].image;
+      img.alt = `Copertina di ${kit.title}`;
+      img.width = 778;
+      img.height = 1100;
+      bundleCover.append(img);
+    });
     const preview = document.querySelector('#productPreview');
     const pages = document.querySelector('#productPreviewPages');
     preview.hidden = !hasPreview;
     pages.replaceChildren();
     document.querySelector('#productPreviewNote').textContent = isBook ? 'Due pagine selezionate del manoscritto. Ingrandisci per leggere l’estratto: non è il libro completo.' : 'Due pagine reali del kit: un esempio e una scheda. Ingrandisci per leggerle; il PDF completo comprende anche le altre pagine.';
+    if (isBundle) document.querySelector('#productPreviewNote').textContent = 'Un esempio e una scheda per ciascuno dei tre quaderni. Sono anteprime reali: il bundle comprende tutti e tre i PDF completi.';
     if (hasPreview) product.previewPages.slice(1).forEach((page, index) => {
       const figure = document.createElement('figure');
       const link = document.createElement('a');
@@ -91,6 +107,11 @@ export function setupBrand() {
     const purchase = document.querySelector('#purchaseLink');
     const pending = document.querySelector('#purchasePending');
     const buyText = isBook ? 'Acquista su Amazon' : 'Acquista il PDF';
+    const offer = bundleOffer(product);
+    document.querySelector('#productOffer').hidden = !offer;
+    document.querySelector('#productSeparatePrice').textContent = offer ? priceLabel({price:offer.separatePrice}) : '';
+    document.querySelector('#productSavings').hidden = !offer;
+    document.querySelector('#productSavings').textContent = offer ? `Risparmi ${priceLabel({price:offer.saving})} (${offer.percentage}%) rispetto ai tre kit acquistati singolarmente.` : '';
     document.querySelector('#productPrice').textContent = isBook && validPrice(product.price) ? `Cartaceo ${priceLabel({price:product.price})}` : priceLabel(product);
     document.querySelector('#productPrice').classList.toggle('book-price', isBook);
     const kindlePrice = document.querySelector('#productKindlePrice');
@@ -100,14 +121,15 @@ export function setupBrand() {
     document.querySelector('#purchaseChannel').textContent = isBook ? 'LIBRO · AMAZON' : 'PRODOTTO DIGITALE · PDF';
     purchase.hidden = !available;
     pending.hidden = available;
-    pending.textContent = buyText;
-    purchase.textContent = buyText;
+    pending.textContent = isBundle ? 'Acquista il bundle' : buyText;
+    purchase.textContent = isBundle ? 'Acquista il bundle' : buyText;
     purchase.removeAttribute('href');
     if (available) {
       purchase.href = isBook ? product.amazonUrl : product.checkoutUrl;
     }
     document.querySelector('#productStatus').textContent = available ? (isBook ? 'Si aprirà la scheda Amazon del libro in una nuova finestra.' : 'Si aprirà il checkout. Il file completo viene consegnato soltanto dopo la conferma del pagamento.') : (isBook ? 'Prezzi di lancio previsti. Dopo la pubblicazione, potrai scegliere cartaceo o ebook Kindle nella scheda Amazon. Il collegamento di acquisto non è ancora disponibile.' : 'Il prezzo di lancio è indicato e puoi esplorare l’anteprima. Pagamento e scaricamento del PDF completo non sono ancora attivi.');
     document.querySelector('#purchaseNotice').textContent = isBook ? 'Il prezzo finale e la disponibilità saranno confermati su Amazon.' : 'Le anteprime sono pubbliche. I file completi restano privati: questa scheda non abilita un download gratuito.';
+    if (isBundle) document.querySelector('#productStatus').textContent = available ? 'Si aprirà il checkout. I tre PDF completi vengono consegnati soltanto dopo la conferma del pagamento.' : 'Puoi esplorare i tre quaderni inclusi e il prezzo del bundle. Pagamento e scaricamento dei file completi non sono ancora attivi.';
     dialog.dataset.product = product.id;
     if (updateHistory && location.hash !== productHash(product.id)) {
       history.pushState({...history.state, shopProduct:product.id}, '', productHash(product.id));

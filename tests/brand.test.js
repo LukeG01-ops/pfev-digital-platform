@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { recommendChapters, chapters, referenceEdition } from '../src/book-references.js';
-import { products, episodes, purchaseAvailable, previewAvailable, priceLabel, validPrice, amazonProductUrl, digitalCheckoutUrl, audioAvailable } from '../src/catalog.js';
+import { products, episodes, purchaseAvailable, previewAvailable, priceLabel, validPrice, amazonProductUrl, digitalCheckoutUrl, audioAvailable, bundleOffer } from '../src/catalog.js';
 import { detailsFor, productHash, productIdFromHash } from '../src/product-details.js';
 import { existsSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -34,7 +34,7 @@ test('unfinished products never expose a purchase even with a stray checkout URL
   assert.equal(purchaseAvailable({status:'review',price:12,checkoutUrl:'https://checkout.example.test'}), false);
 });
 test('all three kits have actual public samples, not complete paid PDF links', () => {
-  const kits = products.filter(p => p.category !== 'libro');
+  const kits = products.filter(p => p.category !== 'libro' && !p.bundleItems);
   assert.equal(kits.length, 3);
   assert.deepEqual(kits.map(p => p.pages), [12,14,12]);
   for (const kit of kits) {
@@ -51,13 +51,11 @@ test('all three kits have actual public samples, not complete paid PDF links', (
   assert.ok(publicFiles.every(path => !String(path).toLowerCase().endsWith('.pdf')));
   const html = shopMarkup(() => '');
   assert.doesNotMatch(html, /Prezzo da definire/);
-  assert.equal((html.match(/4,90/g) || []).length, 3);
-  assert.match(html, /Cartaceo 13,90/);
-  assert.match(html, /Kindle 7,90/);
+  assert.doesNotMatch(html, /4,90|13,90|7,90|11,90|14,70/);
   assert.doesNotMatch(html, /href="[^\"]*\.pdf/i);
   assert.match(html, /in revisione editoriale/);
 });
-test('all four products have editorial details, preview and a discoverable purchase area', () => {
+test('all five products have editorial details, preview and a discoverable purchase area', () => {
   const html = shopMarkup(() => '');
   for (const p of products) {
     const d = detailsFor(p);
@@ -72,7 +70,28 @@ test('all four products have editorial details, preview and a discoverable purch
   assert.match(html, /id="productPrice"/);
   assert.match(html, /id="purchasePending"[^>]*disabled/);
   assert.match(html, /id="purchaseLink"[^>]*hidden/);
-  assert.equal((html.match(/>Esplora /g) || []).length, 4);
+  assert.equal((html.match(/>Esplora /g) || []).length, 5);
+});
+test('the optional offer bundles only the three kits with an accurate separate-purchase comparison', () => {
+  const bundle = products.find(p => p.id === 'bundle');
+  assert.equal(bundle.category, 'offerte');
+  assert.equal(bundle.price, 11.9);
+  assert.deepEqual(bundle.bundleItems, ['planning','recupero','energia']);
+  assert.deepEqual(bundleOffer(bundle), {separatePrice:14.7,saving:2.8,percentage:19});
+  assert.equal(bundle.previewPages.length, 7);
+  assert.equal(purchaseAvailable(bundle), false);
+  assert.equal(bundleOffer({...bundle,bundleItems:['planning','planning']}), null);
+  assert.equal(bundleOffer({...bundle,bundleItems:['planning','missing']}), null);
+  assert.equal(bundleOffer({...bundle,bundleItems:['planning','libro']}), null);
+  assert.equal(bundleOffer({...bundle,price:14.7}), null);
+  assert.equal(bundleOffer({...bundle,price:15}), null);
+  assert.equal(bundleOffer(products.find(p=>p.id==='planning')), null);
+  const html = shopMarkup(()=> '');
+  assert.match(html, /data-filter="offerte"[^>]*>Offerte/);
+  assert.match(html, /data-category="offerte"/);
+  assert.match(html, /class="offer-badge">Offerta/);
+  assert.match(html, /<s id="productSeparatePrice"><\/s>/);
+  assert.doesNotMatch(html, /class="product-bottom"><span class="availability-label"/);
 });
 test('author-approved launch prices are displayed without activating purchases', () => {
   const book = products.find(p => p.id === 'libro');
@@ -80,7 +99,7 @@ test('author-approved launch prices are displayed without activating purchases',
   assert.equal(book.kindlePrice, 7.9);
   assert.match(priceLabel(book), /Cartaceo 13,90.*Kindle 7,90/);
   assert.equal(book.amazonUrl, null);
-  for (const p of products.filter(p => p.category !== 'libro')) {
+  for (const p of products.filter(p => p.category !== 'libro' && !p.bundleItems)) {
     assert.equal(p.price, 4.9);
     assert.match(priceLabel(p), /4,90/);
     assert.equal(p.checkoutUrl, null);
