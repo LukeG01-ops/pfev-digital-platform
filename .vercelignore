@@ -1,0 +1,5 @@
+# Keep original paid PDFs and local-only state out of deployment uploads.
+private-products/
+node_modules/
+.git/
+.env*
