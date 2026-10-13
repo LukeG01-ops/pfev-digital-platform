@@ -1,10 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { recommendChapters, chapters, referenceEdition } from '../src/book-references.js';
-import { products, episodes, purchaseAvailable, audioAvailable } from '../src/catalog.js';
+import { products, episodes, purchaseAvailable, previewAvailable, audioAvailable } from '../src/catalog.js';
+import { existsSync, readdirSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { volumes } from '../src/books.js';
 import { renderPage } from '../src/page.js';
-import { audioMarkup } from '../src/brand-sections.js';
+import { audioMarkup, shopMarkup } from '../src/brand-sections.js';
 
 test('a night-shift sleep request points to the verified recovery chapter', () => {
   const ids = recommendChapters('Patisco il sonno dopo un turno di notte. Voglio un piano per recuperare.');
@@ -28,6 +30,35 @@ test('unfinished products never expose a purchase even with a stray checkout URL
   assert.equal(purchaseAvailable({status:'available',price:null,checkoutUrl:'https://checkout.example.test'}), false);
   assert.equal(purchaseAvailable({status:'available',price:12,checkoutUrl:'javascript:alert(1)'}), false);
   assert.equal(purchaseAvailable({status:'available',price:12,checkoutUrl:'https://checkout.example.test'}), true);
+  assert.equal(purchaseAvailable({status:'review',price:12,checkoutUrl:'https://checkout.example.test'}), false);
+});
+test('all three kits have actual public samples, not complete paid PDF links', () => {
+  const kits = products.filter(p => p.category !== 'libro');
+  assert.equal(kits.length, 3);
+  assert.deepEqual(kits.map(p => p.pages), [12,14,12]);
+  for (const kit of kits) {
+    assert.equal(kit.status, 'review');
+    assert.equal(previewAvailable(kit), true);
+    assert.equal(purchaseAvailable(kit), false);
+    assert.equal(kit.previewPages.length, 3);
+    for (const page of kit.previewPages) {
+      assert.ok(existsSync(fileURLToPath(new URL(`../public${page.image}`, import.meta.url))));
+    }
+    assert.equal(kit.downloadUrl, undefined);
+  }
+  const publicFiles = readdirSync(fileURLToPath(new URL('../public', import.meta.url)), {recursive:true});
+  assert.ok(publicFiles.every(path => !String(path).toLowerCase().endsWith('.pdf')));
+  const html = shopMarkup(() => '');
+  assert.equal((html.match(/Anteprima disponibile/g) || []).length, 3);
+  assert.doesNotMatch(html, /href="[^\"]*\.pdf/i);
+  assert.match(html, /in revisione editoriale/);
+});
+test('preview paths only accept curated local kit samples', () => {
+  assert.equal(previewAvailable({}), false);
+  assert.equal(previewAvailable({previewPages:[]}), false);
+  for (const image of ['javascript:alert(1)','https://example.test/full.pdf','/kits/../private-products/full.pdf','/kits/full.pdf']) {
+    assert.equal(previewAvailable({previewPages:[{image,caption:'Prova'}]}), false);
+  }
 });
 test('one book is visible now; additional volumes work without a trilogy limit', () => {
   const oneBook = renderPage(() => '');

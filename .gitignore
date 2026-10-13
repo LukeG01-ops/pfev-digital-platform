@@ -27,3 +27,5 @@ dist-ssr
 !.env.example
 .sites-runtime/
 .impeccable/review/
+# Full paid PDFs must never enter this public repository or static build.
+/private-products/

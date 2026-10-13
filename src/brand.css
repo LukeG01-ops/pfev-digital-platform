@@ -51,6 +51,7 @@ details[open] > summary > .icon { transform:rotate(45deg); }
 .product-info .eyebrow { margin-bottom:10px; font-size:.64rem; }
 .product-info h3 { font:400 1.6rem/1.15 'Bodoni Moda',Georgia,serif; }
 .product-info > p { font-size:.91rem; color:var(--muted); margin:15px 0 22px; min-height:92px; }
+.product-info > .kit-format { font-size:.73rem; min-height:0; margin:0 0 16px; }
 .product-bottom { border-top:1px solid var(--line); padding-top:16px; display:flex; justify-content:space-between; gap:10px; align-items:center; }
 .availability-label { color:var(--muted); font-size:.7rem; }
 .product-bottom button { border:0; background:transparent; padding:4px 0; font-size:.84rem; }
@@ -63,6 +64,16 @@ dialog ul { padding-left:20px; }
 dialog li { margin-block:8px; }
 .dialog-close { position:absolute; top:12px; right:16px; border:0; background:none; font-size:1.8rem; width:40px; height:40px; }
 .dialog-status { color:var(--muted); padding-block:15px; margin-block:15px; border-top:1px solid var(--line); font-size:.88rem; }
+.kit-preview { margin-top:25px; border-top:1px solid var(--line); padding-top:18px; }
+.kit-preview summary { cursor:pointer; display:flex; gap:16px; justify-content:space-between; align-items:center; font-size:.95rem; }
+.kit-preview > p { font-size:.81rem; color:var(--muted); margin-top:14px; }
+.kit-preview-pages { display:flex; gap:18px; overflow-x:auto; padding:18px 0 12px; scroll-snap-type:x proximity; }
+.kit-preview-pages figure { flex:0 0 min(290px,100%); margin:0; scroll-snap-align:start; }
+.kit-preview-pages img { display:block; width:100%; height:auto; border:1px solid var(--line); background:white; }
+.kit-preview-pages figcaption { font-size:.77rem; color:var(--muted); margin-top:10px; }
+.preview-enlarge { display:block; font-size:.79rem; padding-top:8px; text-decoration:underline; }
+.art-recupero { background:#e0edf0; }
+.art-energia { background:#f0e0e7; }
 .recommended-reading { display:grid; grid-template-columns:1fr 1fr; gap:50px; border-top:1px solid #b9cec6; margin-top:36px; padding-top:32px; }
 .recommended-reading h3 { font:400 2rem/1.2 'Bodoni Moda',Georgia,serif; margin-bottom:12px; }
 .recommended-reading p { font-size:.9rem; color:var(--muted); }

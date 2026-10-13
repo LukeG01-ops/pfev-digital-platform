@@ -16,6 +16,10 @@ Il catalogo crea una scheda shop per ciascun libro visibile. La sezione con gli 
 
 Non inserire PDF a pagamento dentro `public/`: sarebbero liberamente scaricabili. Usare la consegna protetta del servizio scelto. Prezzi, termini di vendita e assistenza vanno completati insieme alla piattaforma.
 
+Il 13 ottobre 2026: i tre kit 1.0 sono stati inseriti nel catalogo con contenuti effettivi, formato A4 compilabile e conteggi di 12, 14 e 12 pagine. `status: review` comunica che sono in revisione e mantiene gli acquisti disattivati. Ogni kit ha tre immagini di pagine reali in `public/kits/`: copertina, esempio compilato e una scheda. Nel dialogo sono esplorabili e ingrandibili; non sono i PDF completi.
+
+Il repository GitHub è pubblico. I file integrali sono preparati soltanto in `private-products/`, escluso da Git e dalla cartella statica Vite. Non sono ancora caricati in un servizio di consegna protetta. Per attivare la vendita serve prima scegliere/configurare la piattaforma, caricare lì i PDF, impostare prezzo e checkout e approvare la revisione editoriale. `previewAvailable` accetta soltanto immagini locali curate; nessun collegamento pubblico ai file completi.
+
 ## Audio
 
 Le voci di `episodes` possono essere aumentate senza riscrivere la pagina. `source: null` mostra la descrizione in preparazione. Con una sorgente reale pubblica HTTPS o un percorso locale compaiono player e trascrizione opzionale; `preload="none"` evita download anticipati. Una guida in riproduzione mette in pausa le altre.
