@@ -7,7 +7,7 @@ const details = {
     steps: ['Leggi i capitoli seguendo il percorso, senza dover applicare tutto subito.', 'Prova gli esercizi e costruisci una prima versione del PFEV.', 'Torna alle schede e all’appendice quando cambia la tua settimana.'],
     relation: 'Il libro contiene già il metodo e gli esercizi. I kit digitali sono facoltativi: aggiungono schede pronte da ristampare o compilare al computer, non passaggi necessari per completare il percorso.',
     limitation: 'Un metodo di organizzazione personale, non una terapia per problemi di sonno o altre condizioni di salute.',
-    delivery: 'L’acquisto sarà effettuato su Amazon. Formato, disponibilità, prezzo finale e spedizione saranno quelli indicati nella scheda Amazon del libro.',
+    delivery: 'Il libro sarà acquistabile su Amazon in formato cartaceo oppure ebook Kindle. Sceglierai il formato nella scheda Amazon, dove saranno confermati prezzo finale, disponibilità e modalità di consegna. Il libro digitale non viene venduto come PDF su questo sito.',
   },
   planning: {
     audience: 'Per quando i turni cambiano, le priorità si accumulano o hai bisogno di una base semplice da cui ripartire.',

@@ -81,6 +81,7 @@ dialog li { margin-block:8px; }
 .purchase-card .eyebrow { font-size:.61rem; margin-bottom:14px; }
 .purchase-card h3 { margin:0 0 14px; font-size:1.05rem; }
 .purchase-card .product-price { font:400 2.8rem/1.15 'Bodoni Moda',Georgia,serif; margin:18px 0; }
+.purchase-card .product-price.book-price { font-size:2rem; }
 .purchase-card .price-pending { font:400 1.35rem/1.3 'Barlow',sans-serif; color:var(--muted); }
 .purchase-card .button { font-size:.83rem; padding:14px 12px; }
 .purchase-card button:disabled { cursor:not-allowed; background:#dde3df; color:#52635f; border-color:#c9d1cd; opacity:1; }

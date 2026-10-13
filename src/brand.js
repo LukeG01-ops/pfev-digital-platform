@@ -91,7 +91,11 @@ export function setupBrand() {
     const purchase = document.querySelector('#purchaseLink');
     const pending = document.querySelector('#purchasePending');
     const buyText = isBook ? 'Acquista su Amazon' : 'Acquista il PDF';
-    document.querySelector('#productPrice').textContent = priceLabel(product);
+    document.querySelector('#productPrice').textContent = isBook && validPrice(product.price) ? `Cartaceo ${priceLabel({price:product.price})}` : priceLabel(product);
+    document.querySelector('#productPrice').classList.toggle('book-price', isBook);
+    const kindlePrice = document.querySelector('#productKindlePrice');
+    kindlePrice.hidden = !isBook || !validPrice(product.kindlePrice);
+    kindlePrice.textContent = kindlePrice.hidden ? '' : `Ebook Kindle ${priceLabel({price:product.kindlePrice})}`;
     document.querySelector('#productPrice').classList.toggle('price-pending', !validPrice(product.price));
     document.querySelector('#purchaseChannel').textContent = isBook ? 'LIBRO · AMAZON' : 'PRODOTTO DIGITALE · PDF';
     purchase.hidden = !available;
@@ -102,7 +106,7 @@ export function setupBrand() {
     if (available) {
       purchase.href = isBook ? product.amazonUrl : product.checkoutUrl;
     }
-    document.querySelector('#productStatus').textContent = available ? (isBook ? 'Si aprirà la scheda Amazon del libro in una nuova finestra.' : 'Si aprirà il checkout. Il file completo viene consegnato soltanto dopo la conferma del pagamento.') : (isBook ? 'Il libro sarà acquistabile su Amazon dopo la pubblicazione. Prezzo e collegamento all’articolo non sono ancora disponibili.' : 'L’anteprima è disponibile. Prezzo, pagamento e scaricamento del PDF completo non sono ancora attivi.');
+    document.querySelector('#productStatus').textContent = available ? (isBook ? 'Si aprirà la scheda Amazon del libro in una nuova finestra.' : 'Si aprirà il checkout. Il file completo viene consegnato soltanto dopo la conferma del pagamento.') : (isBook ? 'Prezzi di lancio previsti. Dopo la pubblicazione, potrai scegliere cartaceo o ebook Kindle nella scheda Amazon. Il collegamento di acquisto non è ancora disponibile.' : 'Il prezzo di lancio è indicato e puoi esplorare l’anteprima. Pagamento e scaricamento del PDF completo non sono ancora attivi.');
     document.querySelector('#purchaseNotice').textContent = isBook ? 'Il prezzo finale e la disponibilità saranno confermati su Amazon.' : 'Le anteprime sono pubbliche. I file completi restano privati: questa scheda non abilita un download gratuito.';
     dialog.dataset.product = product.id;
     if (updateHistory && location.hash !== productHash(product.id)) {

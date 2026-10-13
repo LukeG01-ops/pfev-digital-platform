@@ -4,19 +4,21 @@
 
 Libro e tre kit hanno schede editoriali complete: destinatari, descrizione, contenuti, istruzioni, rapporto con il metodo, limiti, anteprima e area prezzo/acquisto. Si aprono sia da copertina sia da “Esplora”. I collegamenti `#prodotto/libro`, `#prodotto/planning`, `#prodotto/recupero` e `#prodotto/energia` sono condivisibili e funzionano anche aprendo direttamente il sito.
 
-I prezzi non sono stati ancora decisi dall'autore. Nessun importo è inventato: compare “Prezzo da definire”. Non esiste ancora un account di pagamento scelto/attivato. I pulsanti di acquisto sono visibili ma disabilitati, con spiegazione. Non sono stati creati checkout, prodotti o pagamenti reali. I file completi restano nel Blob store privato; solo le anteprime sono pubbliche.
+L'autore ha approvato i prezzi di lancio: cartaceo 13,90 EUR, ebook Kindle 7,90 EUR, ciascuno dei tre kit PDF 4,90 EUR. Libro cartaceo ed ebook saranno acquistabili su Amazon nella scheda con scelta del formato; sul sito si vendono solo i kit PDF. Non è stato aggiunto un bundle né un prezzo per volumi futuri. I pulsanti di acquisto restano disabilitati: manca ancora la pubblicazione Amazon e il checkout digitale con consegna protetta. Non sono stati creati checkout, prodotti o pagamenti reali. I file completi restano nel Blob store privato; solo le anteprime sono pubbliche.
+
+La connessione Stripe è disponibile e la lista account conferma un unico ambiente autorizzato, “Sandbox di ecommerce”, con `livemode: false`. Questo conferma l'accesso all'ambiente di prova, non l'attivazione degli incassi reali né i permessi effettivi su ogni risorsa.
 
 ## Libro su Amazon
 
-Nella voce del libro in `src/catalog.js`, impostare il prezzo approvato dall'autore e `amazonUrl` con l'URL effettivo della scheda prodotto, non homepage, ricerca o link inventato. Prima di attivarlo, verificare titolo, autore, edizione e formato dell'articolo. Lo stato deve diventare `available` solo quando il libro è pubblicato.
+Nella voce del libro in `src/catalog.js`, `price` è il prezzo cartaceo e `kindlePrice` quello dell'ebook. Sono già impostati gli importi approvati. Aggiungere `amazonUrl` con l'URL effettivo della scheda prodotto, non homepage, ricerca o link inventato. Prima di attivarlo, verificare titolo, autore, edizione e disponibilità dei due formati. Lo stato deve diventare `available` solo quando il libro è pubblicato. Confermare il prezzo finale al cliente nella schermata KDP: per il cartaceo il valore inserito può essere al netto dell'IVA.
 
 Il pulsante è “Acquista su Amazon”. Il sito non incassa questo acquisto e non gestisce la spedizione del libro. Prezzo finale e disponibilità sono confermati su Amazon. Nessun codice affiliato viene aggiunto automaticamente.
 
-## PDF: scelta del servizio ancora necessaria
+## PDF: Stripe scelto, implementazione da completare
 
-Per il progetto che potrà includere anche articoli fisici, la proposta è **Stripe Checkout**, ma non è stata assunta una scelta dell'autore e non è stata attivata un'integrazione finanziaria. Checkout ospitato raccoglie i dati di pagamento su Stripe; il nostro server deve gestire l'autorizzazione del download.
+Per il progetto che potrà includere anche articoli fisici, l'autore ha scelto **Stripe** e completato l'autorizzazione della sandbox. Il checkout non è ancora implementato: prima di scrivere il relativo codice usare il planner ufficiale della connessione Stripe e confermare i requisiti per il flusso. Checkout ospitato raccoglierà i dati di pagamento su Stripe; il nostro server dovrà gestire l'autorizzazione del download.
 
-L'alternativa **Lemon Squeezy** è orientata ai prodotti digitali: gestisce checkout/consegna e opera come merchant of record. Non permette articoli fisici. La scelta deve precedere onboarding e implementazione specifica. Non creare account né accettare termini o inserire dati bancari al posto dell'autore.
+L'alternativa valutata, ma non scelta, **Lemon Squeezy** è orientata ai prodotti digitali: gestisce checkout/consegna e opera come merchant of record. Non permette articoli fisici. Non creare account né accettare termini o inserire dati bancari al posto dell'autore.
 
 Fonti ufficiali consultate il 13 ottobre 2026:
 
@@ -38,4 +40,4 @@ Prima del lancio commerciale vanno verificati anche condizioni di vendita, priva
 
 `purchaseAvailable` è una **regola di presentazione del frontend**, non una protezione dei file. Richiede prezzo, stato pubblicato, provider noto, URL di checkout e `deliveryReady: true`; il flag non sostituisce la verifica del pagamento sul server. Non impostarlo prima di aver realizzato e testato la consegna. Gli URL accettati sono checkout Stripe o Lemon Squeezy, non un qualsiasi sito HTTPS.
 
-I pulsanti disabilitati non rappresentano un sistema di pagamento funzionante. L'attivazione è esplicitamente bloccata da prezzi, scelta/account del provider e consegna autenticata ancora mancanti.
+I pulsanti disabilitati non rappresentano un sistema di pagamento funzionante. Prezzi e provider sono stati approvati; mancano ancora implementazione e test di checkout/consegna autenticata, configurazione fiscale e commerciale, e verifica/attivazione dell'account live da parte dell'autore.

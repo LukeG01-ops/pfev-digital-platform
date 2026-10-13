@@ -50,7 +50,10 @@ test('all three kits have actual public samples, not complete paid PDF links', (
   const publicFiles = readdirSync(fileURLToPath(new URL('../public', import.meta.url)), {recursive:true});
   assert.ok(publicFiles.every(path => !String(path).toLowerCase().endsWith('.pdf')));
   const html = shopMarkup(() => '');
-  assert.equal((html.match(/Prezzo da definire/g) || []).length, 4);
+  assert.doesNotMatch(html, /Prezzo da definire/);
+  assert.equal((html.match(/4,90/g) || []).length, 3);
+  assert.match(html, /Cartaceo 13,90/);
+  assert.match(html, /Kindle 7,90/);
   assert.doesNotMatch(html, /href="[^\"]*\.pdf/i);
   assert.match(html, /in revisione editoriale/);
 });
@@ -71,8 +74,19 @@ test('all four products have editorial details, preview and a discoverable purch
   assert.match(html, /id="purchaseLink"[^>]*hidden/);
   assert.equal((html.match(/>Esplora /g) || []).length, 4);
 });
-test('prices are never invented and only valid euro amounts are displayed', () => {
-  for (const p of products) assert.equal(priceLabel(p), 'Prezzo da definire');
+test('author-approved launch prices are displayed without activating purchases', () => {
+  const book = products.find(p => p.id === 'libro');
+  assert.equal(book.price, 13.9);
+  assert.equal(book.kindlePrice, 7.9);
+  assert.match(priceLabel(book), /Cartaceo 13,90.*Kindle 7,90/);
+  assert.equal(book.amazonUrl, null);
+  for (const p of products.filter(p => p.category !== 'libro')) {
+    assert.equal(p.price, 4.9);
+    assert.match(priceLabel(p), /4,90/);
+    assert.equal(p.checkoutUrl, null);
+  }
+  assert.ok(products.every(p => !purchaseAvailable(p)));
+  assert.equal(priceLabel({price:null}), 'Prezzo da definire');
   assert.match(priceLabel({price:9.9}), /9,90/);
   for (const price of [null,undefined,NaN,Infinity,-1,0,'9.99',1.123]) assert.equal(validPrice(price), false);
 });
