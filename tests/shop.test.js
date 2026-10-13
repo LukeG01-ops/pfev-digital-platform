@@ -10,6 +10,13 @@ import handler from '../api/shop.js';
 import StripeClient from 'stripe';
 
 const alice='11111111-1111-4111-8111-111111111111',bob='22222222-2222-4222-8222-222222222222';
+async function applyShopSchema(pg) {
+  // Reproduce Supabase default grants, then verify the follow-up hardening.
+  await pg.exec('alter default privileges in schema public grant all on tables to service_role;');
+  for (const file of ['20261013171411_shift_flow_private_shop_and_reader_bonuses.sql','20261013171828_shift_flow_server_minimum_privileges.sql']) {
+    await pg.exec(await readFile(new URL(`../supabase/migrations/${file}`,import.meta.url),'utf8'));
+  }
+}
 const baseEnv={MEMBERS_ENABLED:'true',MEMBERS_PRIVACY_READY:'true',MEMBERS_PRIVACY_URL:'https://shift-flow-project.vercel.app/privacy',SUPABASE_URL:'https://example.supabase.co',SUPABASE_PUBLIC_KEY:'public-placeholder',SUPABASE_SERVICE_ROLE_KEY:'private-placeholder',STRIPE_SECRET_KEY:'rk_test_placeholder',STRIPE_WEBHOOK_SECRET:'webhook-placeholder',BLOB_READ_WRITE_TOKEN:'blob-placeholder',SHOP_PRICE_IDS:JSON.stringify({planning:'price_plan',recupero:'price_rec',energia:'price_energy',bundle:'price_bundle'}),SHOP_PRODUCT_IDS:JSON.stringify({planning:'prod_plan',recupero:'prod_rec',energia:'prod_energy',bundle:'prod_bundle'}),BOOK_CODE_HASH:createHash('sha256').update('TEST-BOOK-ONLY').digest('hex')};
 
 test('approved prices, discount rounding, exclusions and code normalization are server-side',()=>{
@@ -42,8 +49,8 @@ test('webhook validation requires exact owner, product, total, price, quantity a
 });
 test('actual PostgreSQL migration: redemption, single reservation, cancellation, paid consumption, revocation and RLS',async(t)=>{
   const pg=new PGlite();t.after(()=>pg.close());
-  await pg.exec('create schema auth; create table auth.users(id uuid primary key); create role anon; create role authenticated; create role service_role;');
-  await pg.exec(await readFile(new URL('../supabase/migrations/001_shift_flow.sql',import.meta.url),'utf8'));
+  await pg.exec('create schema auth; create table auth.users(id uuid primary key); create role anon; create role authenticated; create role service_role bypassrls;');
+  await applyShopSchema(pg);
   await pg.query('insert into auth.users values ($1),($2)',[alice,bob]);
   async function call(name,args){return (await pg.query(`select * from public.${name}(${args.map((_,i)=>`$${i+1}`).join(',')})`,args)).rows[0];}
   for(let i=0;i<5;i++)assert.equal((await call('sf_allow_attempt',[alice])).sf_allow_attempt,true);
@@ -79,6 +86,12 @@ test('actual PostgreSQL migration: redemption, single reservation, cancellation,
     await assert.rejects(call('sf_redeem',[bob]),/permission denied/);
     await pg.exec('reset role');
   }
+  assert.equal((await pg.query("select count(*)::int as count from pg_proc where proname like 'sf_%' and prosecdef")).rows[0].count,0);
+  await pg.exec('set role service_role');
+  await call('sf_redeem',[bob]);
+  assert.equal((await pg.query("select has_table_privilege(current_user,'sf_orders','DELETE') as can_delete")).rows[0].can_delete,false);
+  assert.equal((await pg.query("select has_table_privilege(current_user,'sf_members','SELECT') as can_read")).rows[0].can_read,true);
+  await pg.exec('reset role');
 });
 test('server auth never trusts a decoded token or unconfirmed email',async()=>{
   for(const value of [{data:{user:null},error:new Error('bad')},{data:{user:{id:alice,email:'reader@example.test'}}}]) {
@@ -122,9 +135,10 @@ test('public unconfigured API returns no credentials and rejects mutations',asyn
 
 test('checkout and signed webhook lifecycle against PostgreSQL, with mocked Stripe transport',async(t)=>{
   const pg=new PGlite();t.after(()=>pg.close());
-  await pg.exec('create schema auth; create table auth.users(id uuid primary key); create role anon; create role authenticated; create role service_role;');
-  await pg.exec(await readFile(new URL('../supabase/migrations/001_shift_flow.sql',import.meta.url),'utf8'));
+  await pg.exec('create schema auth; create table auth.users(id uuid primary key); create role anon; create role authenticated; create role service_role bypassrls;');
+  await applyShopSchema(pg);
   await pg.query('insert into auth.users values($1)',[alice]);
+  await pg.exec('set role service_role');
   const database={
     async rpc(name,args) {try{const result=await pg.query(`select * from ${name}(${Object.keys(args).map((_,i)=>`$${i+1}`).join(',')})`,Object.values(args));return {data:result.rows[0]};}catch(error){return {error};}},
     from(table) {let field,value;return {select(){return this},eq(f,v){field=f;value=v;return this},async maybeSingle(){const result=await pg.query(`select * from ${table} where ${field}=$1`,[value]);return {data:result.rows[0]};}};},

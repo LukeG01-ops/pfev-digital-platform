@@ -1,4 +1,5 @@
--- Apply once to a dedicated Supabase project. Browser users have no table/RPC access.
+-- Applied migration version returned by Supabase: 20261013171411.
+-- Browser users have no table/RPC access.
 begin;
 create table public.sf_members (
   user_id uuid primary key references auth.users(id) on delete cascade,
@@ -29,10 +30,11 @@ alter table public.sf_orders enable row level security;
 alter table public.sf_code_attempts enable row level security;
 alter table public.sf_revocations enable row level security;
 revoke all on public.sf_members, public.sf_orders, public.sf_code_attempts, public.sf_revocations from public, anon, authenticated;
-grant all on public.sf_members, public.sf_orders, public.sf_code_attempts, public.sf_revocations to service_role;
+grant select, insert, update on public.sf_members, public.sf_orders, public.sf_code_attempts to service_role;
+grant select, insert on public.sf_revocations to service_role;
 
 create function public.sf_allow_attempt(p_user uuid) returns boolean
-language plpgsql security definer set search_path = public, pg_temp as $$
+language plpgsql security invoker set search_path = public, pg_temp as $$
 declare a public.sf_code_attempts;
 begin
   insert into sf_code_attempts(user_id) values(p_user) on conflict do nothing;
@@ -46,14 +48,14 @@ begin
 end $$;
 
 create function public.sf_redeem(p_user uuid) returns void
-language plpgsql security definer set search_path = public, pg_temp as $$
+language plpgsql security invoker set search_path = public, pg_temp as $$
 begin
   insert into sf_members(user_id, redeemed_at) values(p_user,now())
   on conflict(user_id) do update set redeemed_at=coalesce(sf_members.redeemed_at,excluded.redeemed_at);
 end $$;
 
 create function public.sf_start_order(p_user uuid, p_product text, p_discount boolean) returns public.sf_orders
-language plpgsql security definer set search_path = public, pg_temp as $$
+language plpgsql security invoker set search_path = public, pg_temp as $$
 declare m public.sf_members; o public.sf_orders;
 begin
   if p_product not in ('planning','recupero','energia','bundle') then raise exception 'invalid_product'; end if;
@@ -76,21 +78,21 @@ begin
 end $$;
 
 create function public.sf_attach_session(p_order uuid, p_session text) returns void
-language plpgsql security definer set search_path = public, pg_temp as $$
+language plpgsql security invoker set search_path = public, pg_temp as $$
 begin
   update sf_orders set session_id=p_session where id=p_order and (session_id is null or session_id=p_session);
   if not found then raise exception 'session_conflict'; end if;
 end $$;
 
 create function public.sf_transition(p_order uuid, p_session text, p_state text) returns void
-language plpgsql security definer set search_path = public, pg_temp as $$
+language plpgsql security invoker set search_path = public, pg_temp as $$
 begin
   if p_state not in ('processing','expired','failed') then raise exception 'invalid_transition'; end if;
   update sf_orders set state=p_state where id=p_order and session_id=p_session and state in ('pending','processing');
 end $$;
 
 create function public.sf_fulfill(p_order uuid, p_session text, p_intent text) returns void
-language plpgsql security definer set search_path = public, pg_temp as $$
+language plpgsql security invoker set search_path = public, pg_temp as $$
 declare o public.sf_orders; m public.sf_members;
 begin
   -- Keep the same lock order as checkout: member, then order.
@@ -111,7 +113,7 @@ begin
 end $$;
 
 create function public.sf_revoke(p_intent text) returns void
-language plpgsql security definer set search_path = public, pg_temp as $$
+language plpgsql security invoker set search_path = public, pg_temp as $$
 begin
   if p_intent is null then raise exception 'intent_missing'; end if;
   insert into sf_revocations(payment_intent) values(p_intent) on conflict do nothing;
