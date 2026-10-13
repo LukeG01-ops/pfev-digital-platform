@@ -53,7 +53,8 @@ test('all three kits have actual public samples, not complete paid PDF links', (
   assert.doesNotMatch(html, /Prezzo da definire/);
   assert.doesNotMatch(html, /4,90|13,90|7,90|11,90|14,70/);
   assert.doesNotMatch(html, /href="[^\"]*\.pdf/i);
-  assert.match(html, /in revisione editoriale/);
+  assert.match(html, /anteprime reali/);
+  assert.doesNotMatch(html, /in revisione editoriale/);
 });
 test('all five products have editorial details, preview and a discoverable purchase area', () => {
   const html = shopMarkup(() => '');
@@ -153,15 +154,17 @@ test('one book is visible now; additional volumes work without a trilogy limit',
     assert.equal((fourBooks.match(/data-view-volume=/g) || []).length, 4);
   } finally { volumes.splice(1); }
 });
-test('audio controls appear only for real sources; transcript is escaped', () => {
+test('four book bonuses never expose a public source, even if one is accidentally added', () => {
+  assert.equal(episodes.length, 4);
+  assert.ok(episodes.every(e=>e.bonus));
   assert.ok(episodes.every(e => !audioAvailable(e)));
   assert.doesNotMatch(audioMarkup(() => ''), /<audio/);
   const previous = {...episodes[0]};
   try {
     Object.assign(episodes[0], {source:'/audio/guide.mp3',transcript:'<script>bad()</script>'});
     const html = audioMarkup(() => '');
-    assert.match(html, /<audio controls preload="none"/);
-    assert.match(html, /&lt;script&gt;/);
+    assert.doesNotMatch(html, /<audio|\/audio\/guide\.mp3/);
+    assert.equal((html.match(/data-bonus-play=/g) || []).length,4);
     assert.doesNotMatch(html, /<script>/);
     episodes[0].source = 'javascript:alert(1)';
     assert.equal(audioAvailable(episodes[0]), false);

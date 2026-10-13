@@ -10,7 +10,7 @@ export function renderPage(icon) {
     <a class="brand" href="#inizio" aria-label="Shift Flow — inizio pagina">Shift <span>Flow</span><i aria-hidden="true"></i></a>
     <button class="menu-toggle" aria-label="Apri menu" aria-expanded="false" aria-controls="main-nav">${icon("menu")}</button>
     <nav id="main-nav" aria-label="Navigazione principale"><a href="#inizio" aria-current="location">Home</a><a href="#libro">${bookNavLabel}</a><a href="#metodo">Il metodo</a><a href="#planner-ai">Planner AI</a><a href="#shop">Shop</a><a href="#podcast">Podcast</a></nav>
-    <a class="nav-cta" href="#planner-ai">Trova il tuo ritmo ${icon("external")}</a>
+    <button class="account-trigger" id="accountButton" data-member-open aria-haspopup="dialog" aria-controls="memberDialog">Accedi</button>
     <div class="reading-progress" aria-hidden="true"><span id="readingProgress"></span></div>
   </header>
   <main id="contenuto">

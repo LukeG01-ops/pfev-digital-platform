@@ -1,0 +1,19 @@
+.member-dialog { width:min(540px,calc(100% - 32px)); max-height:90dvh; padding:44px 32px 30px; border:1px solid var(--line); border-radius:22px; color:var(--ink); background:var(--paper,#fffdf8); }
+.member-dialog::backdrop {background:rgba(20,25,22,.55);backdrop-filter:blur(4px)}
+.member-dialog h2 {font-size:42px;margin:14px 0 20px;line-height:1.1}
+.member-dialog p {font-size:15px;line-height:1.65;margin:16px 0}
+.member-dialog form {display:grid;gap:12px;margin:20px 0}
+.member-dialog label {font-size:14px;font-weight:600}
+.member-dialog input {width:100%;padding:13px 14px;border:1px solid #b6bdb6;border-radius:10px;background:#fff;color:#17251d;font:inherit}
+.member-dialog .form-note {margin:0;font-size:12px}
+.member-benefits {padding:16px;background:#edf2e9;border-radius:12px}
+.member-order {padding:16px 0;border-bottom:1px solid #d9ded6;display:grid;gap:10px}
+.member-order p {margin:0;font-size:13px}
+.member-dialog .form-status {min-height:24px}
+.reader-discount {margin:16px 0;padding:12px;border:1px solid #bcc9b5;border-radius:10px;font-size:13px;line-height:1.5}
+.reader-discount label {display:flex;gap:8px;align-items:start;cursor:pointer}
+.reader-discount input {margin-top:4px;flex-shrink:0}
+.bonus-message {font-size:13px!important;min-height:20px}
+.episode video {width:100%;border-radius:12px;margin-top:12px}
+.account-trigger {font:inherit;cursor:pointer;white-space:nowrap;background:transparent;border:1px solid #b6bdb6;border-radius:999px;padding:10px 16px;color:inherit}
+@media(max-width:760px) {.member-dialog{padding:42px 22px 24px}.member-dialog h2{font-size:34px}.account-trigger{font-size:13px;padding:8px 12px}.navbar{gap:12px}}

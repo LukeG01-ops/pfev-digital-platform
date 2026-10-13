@@ -44,9 +44,10 @@ export function bundleOffer(product) {
 }
 
 export const episodes = [
-  { id: 'rientro', category: 'recupero', title: 'Rientrare, rallentare', description: 'Una guida per lasciare andare la fretta dopo una giornata intensa e ritrovare un momento per te.', theme: 'Dopo il turno', source: null, transcript: null, duration: null },
-  { id: 'sonno', category: 'sonno', title: 'Un momento prima del riposo', description: 'Un accompagnamento tranquillo per passare dagli impegni a uno spazio dedicato al riposo.', theme: 'Verso il riposo', source: null, transcript: null, duration: null },
-  { id: 'pausa', category: 'meditazione', title: 'Torna al momento presente', description: 'Una pausa guidata per portare attenzione a quello che senti, senza dover raggiungere un risultato.', theme: 'Meditazione', source: null, transcript: null, duration: null },
+  { id: 'rientro', category: 'recupero', title: 'Rientrare e lasciare andare il turno', description: 'Una transizione dalla giornata di lavoro a un momento tuo: rallentare, osservare le tensioni e alleggerire le richieste.', theme: 'Dopo il turno', bonus: true, source: null, transcript: null, duration: null },
+  { id: 'sonno', category: 'sonno', title: 'Fare spazio al riposo', description: 'Un accompagnamento tranquillo prima del riposo, senza forzare il sonno né trasformarlo in un risultato da raggiungere.', theme: 'Verso il riposo', bonus: true, source: null, transcript: null, duration: null },
+  { id: 'pausa', category: 'meditazione', title: 'Una pausa senza dover fare bene', description: 'Attenzione al momento presente, ai suoni e al respiro naturale. Puoi tenere gli occhi aperti e fermarti quando vuoi.', theme: 'Meditazione', bonus: true, source: null, transcript: null, duration: null },
+  { id: 'energia', category: 'consapevolezza', title: 'Ascoltare l’energia e scegliere l’essenziale', description: 'Una pausa per riconoscere come stai e scegliere un piccolo passo coerente con le energie di oggi.', theme: 'Energia e scelte', bonus: true, source: null, transcript: null, duration: null },
 ];
 
 export function purchaseAvailable(product) {
@@ -97,5 +98,6 @@ export function previewAvailable(product) {
 }
 
 export function audioAvailable(episode) {
+  if (episode.bonus) return false; // Bonus media are served only through authenticated signed URLs.
   return typeof episode.source === 'string' && (/^https:\/\//.test(episode.source) || /^\/(?!\/)/.test(episode.source));
 }

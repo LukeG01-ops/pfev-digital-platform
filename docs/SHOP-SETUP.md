@@ -2,6 +2,8 @@
 
 ## Stato al 13 ottobre 2026
 
+**Aggiornamento:** checkout/consegna e accesso con bonus sono ora implementati nel codice, ma non ancora collegati e collaudati con i servizi remoti. Le indicazioni storiche sotto su “non implementato” descrivono la fase precedente. Lo stato operativo corrente e la procedura di attivazione sono in [MEMBERS-PAYMENTS.md](./MEMBERS-PAYMENTS.md). Gli acquisti pubblici restano disabilitati.
+
 Libro e tre kit hanno schede editoriali complete: destinatari, descrizione, contenuti, istruzioni, rapporto con il metodo, limiti, anteprima e area prezzo/acquisto. Si aprono sia da copertina sia da “Esplora”. I collegamenti `#prodotto/libro`, `#prodotto/planning`, `#prodotto/recupero` e `#prodotto/energia` sono condivisibili e funzionano anche aprendo direttamente il sito.
 
 L'autore ha approvato i prezzi di lancio: cartaceo 13,90 EUR, ebook Kindle 7,90 EUR, ciascuno dei tre kit PDF 4,90 EUR. Libro cartaceo ed ebook saranno acquistabili su Amazon nella scheda con scelta del formato; sul sito si vendono solo i kit PDF. I volumi futuri richiedono prezzi approvati separatamente. I pulsanti di acquisto restano disabilitati: manca ancora la pubblicazione Amazon e il checkout digitale con consegna protetta. Non sono stati creati checkout, prodotti o pagamenti reali. I file completi restano nel Blob store privato; solo le anteprime sono pubbliche.

@@ -121,6 +121,7 @@ export function setupBrand() {
     document.querySelector('#purchaseChannel').textContent = isBook ? 'LIBRO · AMAZON' : 'PRODOTTO DIGITALE · PDF';
     purchase.hidden = !available;
     pending.hidden = available;
+    pending.disabled = true;
     pending.textContent = isBundle ? 'Acquista il bundle' : buyText;
     purchase.textContent = isBundle ? 'Acquista il bundle' : buyText;
     purchase.removeAttribute('href');
@@ -131,6 +132,7 @@ export function setupBrand() {
     document.querySelector('#purchaseNotice').textContent = isBook ? 'Il prezzo finale e la disponibilità saranno confermati su Amazon.' : 'Le anteprime sono pubbliche. I file completi restano privati: questa scheda non abilita un download gratuito.';
     if (isBundle) document.querySelector('#productStatus').textContent = available ? 'Si aprirà il checkout. I tre PDF completi vengono consegnati soltanto dopo la conferma del pagamento.' : 'Puoi esplorare i tre quaderni inclusi e il prezzo del bundle. Pagamento e scaricamento dei file completi non sono ancora attivi.';
     dialog.dataset.product = product.id;
+    window.dispatchEvent(new CustomEvent('shift-flow-product', {detail:{product:product.id}}));
     if (updateHistory && location.hash !== productHash(product.id)) {
       history.pushState({...history.state, shopProduct:product.id}, '', productHash(product.id));
     }
